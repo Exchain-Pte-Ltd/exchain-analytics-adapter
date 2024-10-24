@@ -1,1 +1,1 @@
-# exchain-analitic-adapter
+# exchain-analytic-adapter
