@@ -1,0 +1,27 @@
+name: Update README
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Concatenate READMEs
+        run: |
+          echo "exchainAnalyticsAdapter/README" >> README.md
+          echo "" >> README.md
+          cat src/exchainAnalyticsAdapter/README.md >> README.md
+
+      - name: Commit changes
+        run: |
+          git config --local user.name "GitHub Action"
+          git config --local user.email "action@github.com"
+          git add README.md
+          git commit -m "Update main README with nested READMEs"
+          git push
