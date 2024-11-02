@@ -3,22 +3,14 @@
  * @module modules/exchainAnalyticsAdapter
  */
 
-import pbjs from 'prebid.js'
-
-import { getGlobal } from '../src/prebidGlobal.js';
-import adapterManager from '../src/adapterManager.js';
-import { getStorageManager } from '../src/storageManager.js';
-import { MODULE_TYPE_ANALYTICS } from '../src/activities/modules.js';
-
 export const MODULE_NAME = 'ExchainAnalyticsAdapter';
-const EXCHAIN_PREBID_GVL_ID = 6969
 
 export const storage = getStorageManager({
   moduleType: MODULE_TYPE_ANALYTICS,
   moduleName: MODULE_NAME,
 });
 
-const pbjs = getGlobal();
+const pbjs = window.pbjs;
 
 export const exchainPrebidModule = {
   /**
@@ -69,13 +61,6 @@ export const exchainPrebidModule = {
   }
 };
 
-adapterManager.registerAnalyticsAdapter({
-  adapter: exchainPrebidModule,
-  code: 'exchainPrebid',
-  gvlid: EXCHAIN_PREBID_GVL_ID
-});
-
 pbjs.que.push(function() {
-  pbjs.addModule(MODULE_NAME);
   exchainPrebidModule.onPbjsReady();
 });

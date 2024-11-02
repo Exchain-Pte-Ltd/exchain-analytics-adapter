@@ -1,1 +1,1 @@
-# exchain-analytic-adapter
+{% include_relative src/exchainAnalyticsAdapter/README.md %}

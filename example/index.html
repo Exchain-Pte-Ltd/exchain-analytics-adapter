@@ -1,14 +1,18 @@
 <html>
-<head>
-  <link rel="stylesheet" href="style.css">
-</head>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/prebid.js@latest/dist/not-for-prod/prebid.js"></script>
+    <script src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+    <script src="../dist/main.js"></script>
+    <script src="./index.js"></script>
+  </head>
 
   <body>
-  <h5>test-div</h5>
-  <div id='test-div'></div>
-
-  <h5>test-div2</h5>
-  <div id='test-div2'></div>
-
-  <script src="./index.js"></script>
-</body>
+    <div id='div-1' style="min-height:250px;">
+      <script type='text/javascript'>
+        googletag.cmd.push(function() {
+          googletag.display('div-1');
+        });
+      </script>
+    </div>
+  </body>
+</html>
