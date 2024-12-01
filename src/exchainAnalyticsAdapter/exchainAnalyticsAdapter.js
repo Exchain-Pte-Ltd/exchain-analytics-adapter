@@ -5,11 +5,6 @@
 
 export const MODULE_NAME = 'ExchainAnalyticsAdapter';
 
-export const storage = getStorageManager({
-  moduleType: MODULE_TYPE_ANALYTICS,
-  moduleName: MODULE_NAME,
-});
-
 const pbjs = window.pbjs;
 
 export const exchainPrebidModule = {

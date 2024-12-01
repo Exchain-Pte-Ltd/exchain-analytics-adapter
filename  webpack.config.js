@@ -1,6 +1,6 @@
-import path from 'path';
+const path = require('path')
 
-const config = {
+module.exports = {
   mode: 'production',
   entry: './src/index.js',
   output: {
@@ -36,5 +36,3 @@ const config = {
     },
   },
 };
-
-export default config
