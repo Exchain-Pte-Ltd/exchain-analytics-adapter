@@ -1,6 +1,9 @@
-{% include_relative src/exchainAnalyticsAdapter/README.md %}
+# Exchain Analytic Adapter
+
+Welcome to the Exchain Analytic Adapter repository!
 
 ## The Exchain Analytics Adapter is a custom module for Prebid.js that adds a UUID (Universally Unique Identifier) to bid requests. This enables enhanced tracking and analytics for publishers.
+
 
 # Features
 - Automatically generates and appends a UUID to bids before requests are sent.
@@ -27,3 +30,5 @@
   });
 </script>
 ```
+
+Additional configuration [details](src/exchainAnalyticsAdapter/README.md)
