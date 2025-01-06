@@ -1,0 +1,1 @@
+import './exchainAnalyticsAdapter/exchainAnalyticsAdapter.js'
