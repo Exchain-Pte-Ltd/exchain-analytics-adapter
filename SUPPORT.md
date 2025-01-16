@@ -1,18 +1,18 @@
 # Support
 
-Thank you for using the [Exchain Analytics Adapter](https://github.com/Exchain-Pte-Ltd/exchain-analytic-adapter)! We are committed to providing support to ensure you have a great experience. Below are the ways you can get assistance.
+Thank you for using the [Exchain Analytics Adapter](https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter)! We are committed to providing support to ensure you have a great experience. Below are the ways you can get assistance.
 
 ## 1. Documentation
 
 Comprehensive documentation is available to help you get started and troubleshoot common issues:
 
-- **User Guide:** [Exchain Analytics Adapter README](https://github.com/Exchain-Pte-Ltd/exchain-analytic-adapter/blob/main/README.md)
+- **User Guide:** [Exchain Analytics Adapter README](https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter/blob/main/README.md)
 
 ## 2. Reporting Issues
 
 If you encounter any bugs or have feature requests, please report them through our issue tracker:
 
-- **GitHub Issues:** [https://github.com/Exchain-Pte-Ltd/exchain-analytic-adapter/issues](https://github.com/Exchain-Pte-Ltd/exchain-analytic-adapter/issues)
+- **GitHub Issues:** [https://github.com/Exchain-Pte-Ltd/exchain-analytic-adapters/issues](https://github.com/Exchain-Pte-Ltd/exchain-analytic-adapter/issues)
 
 When reporting an issue, please include the following information:
 
