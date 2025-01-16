@@ -6,7 +6,7 @@ Welcome to the **Exchain Analytics Adapter** repository! This custom Prebid.js m
 
 - **Module Name:** Exchain Impression Opportunity Identifier Module (Exchain IOID Module) / Exchain Analytics Adapter
 - **Module Type:** Analytics Adapter
-- **Maintainer:** [slonofanya@gmail.com](mailto:slonofanya@gmail.com)
+- **Maintainer:** [admin@exchain.co ](mailto:admin@exchain.co )
 - **Purpose:** To generate an anonymous, unique, and tamper-proof identifier (UUID) appended to RTB ad requests, addressing challenges in bidstream bloat, sustainability, and wasted ad spend while enabling enhanced tracking and analytics.
 
 ## Description
