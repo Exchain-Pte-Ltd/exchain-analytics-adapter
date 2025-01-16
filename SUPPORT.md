@@ -27,7 +27,7 @@ When reporting an issue, please include the following information:
 
 For direct support or inquiries, feel free to reach out via email:
 
-- **Support Email:** [support@exchain.co](mailto:support@exchain.co)
+- **Support Email:** [admin@exchain.co](mailto:admin@exchain.co)
 
 ## 4. Contributing
 
