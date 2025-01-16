@@ -73,8 +73,6 @@ Initialize the analytics adapter using `enableAnalytics`:
 </script>
 ```
 
-Additional configuration details can be found in the [Exchain Analytics Adapter Documentation](src/exchainAnalyticsAdapter/README.md).
-
 ## Contact
 
 For more information or support, please contact the maintainer at [slonofanya@gmail.com](mailto:slonofanya@gmail.com).
