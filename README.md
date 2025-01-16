@@ -75,6 +75,4 @@ Initialize the analytics adapter using `enableAnalytics`:
 
 ## Contact
 
-For more information or support, please contact the maintainer at [slonofanya@gmail.com](mailto:slonofanya@gmail.com).
-
-ged README provides a comprehensive overview of the module, clear integration instructions, and contact information, all in one place. Adjust any sections as needed to better fit your project's evolving requirements.
+For more information or support, please contact the maintainer at [admin@exchain.co](mailto:admin@exchain.co).
