@@ -16,7 +16,7 @@ The Exchain IOID is an anonymous, unique, and tamper-proof identifier that is ap
 ## Features
 
 - Automatically generates and appends a UUID to bids before requests are sent.
-- Seamlessly integrates with Prebid.js as part of the Real Time Data (RTD) and analytics modules.
+- Seamlessly integrates with Prebid.js as part of the Real Time Data (RTD) and Analytics modules.
 - Addresses programmatic advertising challenges like bidstream bloat and wasted ad spend.
 - Utilizes secure crypto APIs for reliable UUID generation.
 - Configurable via Prebid.js setConfig and enableAnalytics functions.
