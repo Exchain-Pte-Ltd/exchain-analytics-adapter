@@ -23,55 +23,35 @@ The Exchain IOID is an anonymous, unique, and tamper-proof identifier that is ap
 
 ## Integration
 
-### 1. Compile the Module
+### 1. Import the Prebid Module
 
-Compile the Exchain Prebid Module along with your bid adapter and other modules into your Prebid build. For example:
-
-```bash
-gulp build --modules="rtdModule,exchainPrebidAdapter,appnexusBidAdapter,..."  
-```
-
-Refer to [Prebid.js Getting Started Documentation](https://docs.prebid.org/dev-docs/getting-started.html) for more details on the build process.
-
-### 2. Add Compiled Files
-
-Add the compiled `prebid.js` and the `exchainAnalyticsAdapter.js` file (from `path/to/exchainAnalyticsAdapter.js`) to your website.
-
-### 3. Configure Prebid.js
-
-#### For Real Time Data Configuration:
-
-Use `setConfig` to instruct Prebid.js to initialize the Exchain IOID module as part of the Real Time Data providers:
-
-```javascript
-pbjs.setConfig({
-  realTimeData: {
-    dataProviders: [
-      {
-        name: "exchainPrebidAdapter",
-        // Additional provider-specific configuration can go here
-      }
-    ]
-  }
-});
-```
-
-#### For Analytics Integration:
-
-Initialize the analytics adapter using `enableAnalytics`:
+You can include it as a script tag in your HTML:
 
 ```html
-<script>
-  pbjs.que.push(function() {
-    pbjs.enableAnalytics([{
-      provider: 'ExchainAnalyticsAdapter',
-      options: {
-        // Additional options (if any) can be configured here.
-      }
-    }]);
-  });
-</script>
+<script src="https://cdn.jsdelivr.net/npm/prebid.js@latest/dist/not-for-prod/prebid.js"></script>  
 ```
+
+You should not use this URL in production.
+
+Refer to [Prebid.js Getting Started Documentation](https://docs.prebid.org/dev-docs/getting-started.html) for more details on the process.
+
+### 2. Build and import the Exchain Analytics Adapter
+
+To build the Exchain Analytics Adapter, run the following commands:
+
+```bash
+npm install
+
+npm run build
+```
+
+Then you will need to include the generated `main.js` file in your HTML:
+
+```html
+<script src="../dist/main.js"></script>
+```
+
+
 
 ## Contact
 
