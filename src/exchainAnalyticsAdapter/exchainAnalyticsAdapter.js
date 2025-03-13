@@ -31,9 +31,10 @@
  * @maintainer admin@exchain.co
  */
 
+import { getGlobal } from '../src/prebidGlobal.js';
 export const MODULE_NAME = 'ExchainAnalyticsAdapter';
 
-const pbjs = window.pbjs;
+const pbjs = getGlobal();
 
 export const exchainPrebidModule = {
   /**
@@ -65,8 +66,6 @@ export const exchainPrebidModule = {
 
       // Update impression-level identifier (ioid)
       if (bid.ortb2Imp && bid.ortb2Imp.ext) {
-      // deprecated field for backward compatibility
-          bid.ortb2Imp.ext.tid = uuid;
           bid.ortb2Imp.ext.ioid = uuid;
       }
       // Collect all generated IOIDs globally
