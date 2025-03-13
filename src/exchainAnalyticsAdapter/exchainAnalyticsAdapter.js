@@ -15,8 +15,20 @@
  */
 
 /**
- * This module adds UUID to bid
- * @module modules/exchainAnalyticsAdapter
+ * Exchain Analytics Adapter Module
+ *
+ * This Prebid.js analytics adapter automatically generates and appends a unique, secure, and anonymous identifier (IOID)
+ * at the impression level (`ortb2Imp.ext.ioid`) in bid requests. Additionally, it aggregates these identifiers
+ * globally within the `ortb2.site.ext.data.ioids` and includes them in the site's keywords field. This enhances bid request
+ * tracking, streamlines analytics, reduces bidstream bloat, and addresses common programmatic challenges related to
+ * duplicated or ambiguous transaction IDs.
+ *
+ * Features:
+ * - Secure and performant UUIDv4 generation.
+ * - Impression-level and global IOID management for enhanced analytics.
+ * - Seamless integration with existing Prebid.js adapters.
+ *
+ * @maintainer admin@exchain.co
  */
 
 export const MODULE_NAME = 'ExchainAnalyticsAdapter';
@@ -37,14 +49,57 @@ export const exchainPrebidModule = {
     pbjs.onEvent('beforeRequestBids', this.onBidCatch.bind(this));
   },
 
+  // Temporary storage for global IOIDs
+  globalIoids: new Set(),
+
+  addToGlobalIoids(uuid) {
+     this.globalIoids.add(uuid);
+  },
+
   /**
    * Adds UUID to bid
    */
   onBidCatch: function(bids) {
     bids.forEach(bid => {
-      bid.ortb2Imp.ext.tid = this.generateUUID();
+      const uuid = this.generateUUID();
+
+      // Update impression-level identifier (ioid)
+      if (bid.ortb2Imp && bid.ortb2Imp.ext) {
+      // deprecated field for backward compatibility
+          bid.ortb2Imp.ext.tid = uuid;
+          bid.ortb2Imp.ext.ioid = uuid;
+      }
+      // Collect all generated IOIDs globally
+      this.addToGlobalIoids(uuid);
     });
+    // After collecting IOIDs, insert into global ortb2
+    this.insertGlobalIoidsToGlobalOrtB2();
   },
+
+
+   insertGlobalIoidsToGlobalOrtB2: function() {
+       const ortb2 = pbjs.getConfig('ortb2') || {};
+       ortb2.site = ortb2.site || {};
+       ortb2.site.ext = ortb2.site.ext || {};
+       ortb2.site.ext.data = ortb2.site.ext.data || {};
+
+       // Insert IOIDs into the global data object
+       ortb2.site.ext.data.ioids = Array.from(this.globalIoids);
+
+       // Append IOIDs to keywords string for adapters that require it
+       const ioidKeywords = Array.from(this.globalIoids).map(id => `ioid=${id}`).join(',');
+
+       if (ortb2.site.keywords) {
+         ortb2.site.keywords += ',' + ioidKeywords;
+       } else {
+         ortb2.site.keywords = ioidKeywords;
+       }
+
+       pbjs.setConfig({ ortb2 });
+
+       // Clear the Set to free memory
+       this.globalIoids.clear();
+   },
 
   /**
    * Generates UUID
