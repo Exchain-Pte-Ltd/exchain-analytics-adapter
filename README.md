@@ -1,24 +1,24 @@
 # Exchain Analytics Adapter
 
-## 📋 Available Beta Versions
+## 📋 Available Versions
 
-### Version 3.2 (New Beta Testing)
+### Version 3.2 (Latest Release)
 - **Branch**: `main`
-- **Status**: 🧪 New beta version for expanded testing
-- **Download**: [v3.2.0 Pre-release](https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter/releases/tag/v3.2.0)
-- **For**: Publishers participating in v3.2 beta testing program
+- **Status**: ✅ Latest beta release
+- **Download**: [v3.2.0 Release](https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter/releases/tag/v3.2.0)
+- **For**: All beta testing and implementation
 
-### Version 2.5 (Current Beta)
+### Version 2.5 (Legacy - Version History)
 - **Branch**: `release/v2.5` 
 - **Tag**: `v2.5.0`
-- **Status**: 🔄 Current beta version (established testing)
-- **Download**: [v2.5.0 Release](https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter/releases/tag/v2.5.0)
-- **For**: Publishers currently testing v2.5
+- **Status**: 📦 Archived for version control history
+- **Download**: [v2.5.0 Archive](https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter/releases/tag/v2.5.0)
+- **For**: Version history reference only
 
 ## 🚀 Installation Instructions
 
-### For v3.2 Beta Testers
-🆕 **New Beta Version - Test Environment Only**
+### Standard Installation (v3.2 - Latest)
+📦 **Recommended for all new implementations**
 
 ```bash
 # Clone latest version
@@ -31,14 +31,14 @@ npm run build
 <script src="./dist/main.js"></script>
 ```
 
-### For v2.5 Beta Testers
-🔄 **Current Beta Version - Established Testing**
+### Legacy Version Access (v2.5 - Archive)
+📂 **For version history reference only**
 
 ```bash
-# Option 1: Clone stable beta branch
+# Option 1: Clone legacy branch
 git clone -b release/v2.5 https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter.git
 
-# Option 2: Clone and checkout specific tag
+# Option 2: Clone and checkout legacy tag
 git clone https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter.git
 git checkout v2.5.0
 
@@ -70,19 +70,18 @@ The Exchain IOID is an anonymous, unique, and tamper-proof identifier that is ap
 
 ## 📝 Version History & Changes
 
-### v3.2.0 (New Beta)
-- **Release Date**: [To be updated]
-- **Status**: New beta testing phase
+### v3.2.0 (Latest Release)
+- **Release Date**: [Current]
+- **Status**: Latest beta release
 - **Key Changes**:
-  - [To be updated with v3.2 changes]
+  - [To be updated with v3.2 specific improvements]
   - [New features to be listed]
   - [Performance enhancements]
-- **Breaking Changes**: [If any]
-- **Migration Notes**: [Instructions for v2.5 → v3.2]
+- **Migration Notes**: [Instructions for upgrading from previous versions]
 
-### v2.5.0 (Current Beta)
-- **Release Date**: [Previous release]
-- **Status**: Established beta testing
+### v2.5.0 (Legacy Archive)
+- **Release Date**: [Previous]
+- **Status**: Archived for version history
 - **Features**: 
   - UUID generation and appending to bid requests
   - Prebid.js RTD and Analytics module integration
@@ -90,16 +89,11 @@ The Exchain IOID is an anonymous, unique, and tamper-proof identifier that is ap
 
 ## 🧪 Beta Testing Program
 
-### For v3.2 Beta Testers:
+### Current Beta Testing (v3.2):
 - **Environment**: Test/staging environments only
-- **Duration**: [Testing period to be defined]
+- **Duration**: [Testing period]
 - **Feedback**: Report to [admin@exchain.co](mailto:admin@exchain.co)
 - **Focus Areas**: [Specific areas for v3.2 feedback]
-
-### For v2.5 Beta Testers:
-- **Status**: Continue current testing or migrate to v3.2
-- **Support**: Ongoing support available
-- **Migration**: Optional upgrade to v3.2 when ready
 
 ## Integration
 
@@ -132,13 +126,12 @@ Then you will need to include the generated `main.js` file in your HTML:
 
 ## ⚠️ Important Notes
 
-- **Both versions are in beta testing** - not for production use
+- **Current version is in beta testing** - not for production use
 - **Test environments only** - do not deploy in live advertising environments
-- **Data collection**: Both versions collect analytics for improvement
-- **Support**: Available during business hours for both versions
+- **Data collection**: Analytics collected for improvement
+- **Support**: Available during business hours
 
 ## 📞 Support
-- **v2.5 Beta Issues**: [admin@exchain.co](mailto:admin@exchain.co)
 - **v3.2 Beta Issues**: [admin@exchain.co](mailto:admin@exchain.co)
 - **General Questions**: [admin@exchain.co](mailto:admin@exchain.co)
 
