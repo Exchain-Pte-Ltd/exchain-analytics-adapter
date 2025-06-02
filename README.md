@@ -79,6 +79,193 @@ Open the `example/index.html` file in your browser and check the console for ver
 🔤 IOID in ortb2.site.keywords: "ioid=abc123-def4-5678-90ab-cdef12345678"
 ```
 
+## 📖 Configuration & Usage
+
+### Basic Configuration
+
+The ExChain Analytics Adapter requires **no configuration** - it works automatically once included. Simply include the script and it will:
+
+1. **Auto-initialize** when Prebid.js is ready
+2. **Generate IOIDs** automatically before each auction
+3. **Inject IOIDs** into standard ORTB2 locations
+
+### Complete Implementation Example
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- 1. Include Prebid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/prebid.js@latest/dist/not-for-prod/prebid.js"></script>
+    
+    <!-- 2. Include ExChain Analytics Adapter -->
+    <script src="./dist/main.js"></script>
+    
+    <!-- 3. Include Google Publisher Tag (if using GAM) -->
+    <script src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
+</head>
+<body>
+    <!-- 4. Your ad slot -->
+    <div id="div-gpt-ad-1234567890-0" style="width: 300px; height: 250px;"></div>
+
+    <script>
+        // 5. Configure your ad units (standard Prebid setup)
+        var adUnits = [{
+            code: 'div-gpt-ad-1234567890-0',
+            mediaTypes: {
+                banner: {
+                    sizes: [[300, 250]]
+                }
+            },
+            bids: [{
+                bidder: 'appnexus',  // Replace with your bidders
+                params: {
+                    placementId: 13144370  // Your placement ID
+                }
+            }]
+        }];
+
+        // 6. Standard Prebid.js auction setup
+        pbjs.que.push(function() {
+            pbjs.addAdUnits(adUnits);
+            pbjs.requestBids({
+                bidsBackHandler: function() {
+                    // IOIDs are automatically added by this point
+                    googletag.cmd.push(function() {
+                        pbjs.setTargetingForGPTAsync();
+                        googletag.pubads().refresh();
+                    });
+                }
+            });
+        });
+
+        // 7. Google Ad Manager setup (if using GAM)
+        googletag.cmd.push(function() {
+            googletag.defineSlot('/your-ad-unit-path', [300, 250], 'div-gpt-ad-1234567890-0')
+                .addService(googletag.pubads());
+            googletag.pubads().enableSingleRequest();
+            googletag.enableServices();
+        });
+    </script>
+</body>
+</html>
+```
+
+### IOID Data Locations
+
+After the adapter runs, IOIDs are automatically placed in these ORTB2 locations:
+
+#### 1. ortb2.site.ext.data.ioids (Array)
+```javascript
+// Access via Prebid.js
+const ortb2 = pbjs.getConfig('ortb2');
+console.log(ortb2.site.ext.data.ioids); 
+// Output: ["abc123-def4-5678-90ab-cdef12345678"]
+```
+
+#### 2. ortb2.site.keywords (String)
+```javascript
+// Access via Prebid.js
+const ortb2 = pbjs.getConfig('ortb2');
+console.log(ortb2.site.keywords); 
+// Output: "existing,keywords,ioid=abc123-def4-5678-90ab-cdef12345678"
+```
+
+### Integration with Different Bidders
+
+The adapter works with **all Prebid.js bidders** automatically. No bidder-specific configuration needed.
+
+#### Supported Bidders (Partial List)
+- AppNexus/Xandr
+- Google Ad Exchange (AdX)  
+- Amazon TAM/UAM
+- Index Exchange
+- PubMatic
+- Rubicon Project
+- OpenX
+- All other Prebid.js compatible bidders
+
+### Advanced Configuration Options
+
+#### Manual Initialization (Optional)
+```javascript
+// If you need to manually control initialization
+import { exchainPrebidModule } from './dist/main.js';
+
+// Initialize manually
+pbjs.que.push(function() {
+    exchainPrebidModule.init();
+});
+```
+
+#### Verification & Debugging
+```javascript
+// Check if IOIDs are being generated
+pbjs.onEvent('beforeRequestBids', function() {
+    setTimeout(function() {
+        const ortb2 = pbjs.getConfig('ortb2');
+        if (ortb2?.site?.ext?.data?.ioids?.length > 0) {
+            console.log('✅ ExChain IOID active:', ortb2.site.ext.data.ioids[0]);
+        } else {
+            console.warn('⚠️ No ExChain IOID found');
+        }
+    }, 100);
+});
+```
+
+## 🔧 Troubleshooting
+
+### Common Issues & Solutions
+
+#### ❌ "No IOID found in ORTB2 configuration"
+**Possible Causes:**
+- Prebid.js not loaded before the adapter
+- Crypto API not available (very rare in modern browsers)
+- JavaScript errors preventing initialization
+
+**Solutions:**
+```javascript
+// 1. Verify Prebid.js is loaded
+if (typeof pbjs === 'undefined') {
+    console.error('Prebid.js not loaded');
+}
+
+// 2. Check for crypto API
+if (typeof crypto === 'undefined' || !crypto.getRandomValues) {
+    console.error('Crypto API not available');
+}
+
+// 3. Check for JavaScript errors in console
+```
+
+#### ❌ Adapter not initializing
+**Solutions:**
+```javascript
+// Ensure adapter loads after Prebid.js
+<script src="prebid.js"></script>
+<script src="./dist/main.js"></script> <!-- Load after Prebid -->
+```
+
+#### ❌ IOIDs not appearing in bid requests
+**Check:**
+1. Verify the adapter is generating IOIDs (see console logs)
+2. Ensure `beforeRequestBids` event is firing
+3. Check ORTB2 configuration: `pbjs.getConfig('ortb2')`
+
+### Browser Compatibility
+
+**Supported Browsers:**
+- ✅ Chrome 50+
+- ✅ Firefox 55+  
+- ✅ Safari 11+
+- ✅ Edge 79+
+- ✅ All modern mobile browsers
+
+**Requirements:**
+- JavaScript ES6+ support
+- Crypto API (available in all modern browsers)
+- Prebid.js 4.0+
+
 ## 🧪 Beta Testing Program
 
 - **Environment**: Test/staging environments only
