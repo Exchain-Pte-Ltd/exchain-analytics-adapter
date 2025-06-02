@@ -1,7 +1,7 @@
 {
   "name": "exchain-analytics-adapter",
-  "version": "2.5.0",
-  "description": "",
+  "version": "3.2.0",
+  "description": "Exchain Analytics Adapter - Beta Testing v3.2",
   "main": "src/index.js",
   "scripts": {
     "start": "webpack serve --open",
