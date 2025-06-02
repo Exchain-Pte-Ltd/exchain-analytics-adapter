@@ -1,50 +1,21 @@
 # Exchain Analytics Adapter
 
-## 📋 Available Versions
+[![Latest Release](https://img.shields.io/github/v/release/Exchain-Pte-Ltd/exchain-analytics-adapter)](https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter/releases/tag/v3.2.0)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE.md)
 
-### Version 3.2 (Latest Release)
-- **Branch**: `main`
-- **Status**: ✅ Latest beta release
-- **Download**: [v3.2.0 Release](https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter/releases/tag/v3.2.0)
-- **For**: All beta testing and implementation
-
-### Version 2.5 (Legacy - Version History)
-- **Branch**: `release/v2.5` 
-- **Tag**: `v2.5.0`
-- **Status**: 📦 Archived for version control history
-- **Download**: [v2.5.0 Archive](https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter/releases/tag/v2.5.0)
-- **For**: Version history reference only
-
-## 🚀 Installation Instructions
-
-### Standard Installation (v3.2 - Latest)
-📦 **Recommended for all new implementations**
+## 🚀 Quick Start
 
 ```bash
-# Clone latest version
+# Clone the repository
 git clone https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter.git
 cd exchain-analytics-adapter
+
+# Build the adapter
 npm install
 npm run build
 
-# Include the generated main.js file
+# Include in your HTML
 <script src="./dist/main.js"></script>
-```
-
-### Legacy Version Access (v2.5 - Archive)
-📂 **For version history reference only**
-
-```bash
-# Option 1: Clone legacy branch
-git clone -b release/v2.5 https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter.git
-
-# Option 2: Clone and checkout legacy tag
-git clone https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter.git
-git checkout v2.5.0
-
-cd exchain-analytics-adapter
-npm install
-npm run build
 ```
 
 ## Overview
@@ -56,85 +27,81 @@ Welcome to the **Exchain Analytics Adapter** repository! This custom Prebid.js m
 - **Maintainer:** [admin@exchain.co](mailto:admin@exchain.co)
 - **Purpose:** To generate an anonymous, unique, and tamper-proof identifier (UUID) appended to RTB ad requests, addressing challenges in bidstream bloat, sustainability, and wasted ad spend while enabling enhanced tracking and analytics.
 
-## Description
+## Key Features
 
-The Exchain IOID is an anonymous, unique, and tamper-proof identifier that is appended to RTB ad requests by publishers. This solution tackles programmatic ecosystem challenges by reducing bidstream bloat, improving sustainability, and minimizing wasted ad spend. The Exchain Analytics Adapter builds on this by automatically generating and appending a UUID to bid requests, leveraging secure cryptographic APIs for UUID generation, and integrating seamlessly with Prebid.js.
+✅ **Production-ready** - Clean, minimal code optimized for reliability  
+✅ **Single IOID per auction** - More efficient than per-impression approach  
+✅ **Global ORTB2 placement** in two standard locations:
+- `ortb2.site.ext.data.ioids` (array with single element)
+- `ortb2.site.keywords` (appended as "ioid={uuid}")
 
-## Features
+✅ **Self-contained** - No external dependencies required  
+✅ **Standard integration** - Uses Prebid.js `beforeRequestBids` event  
+✅ **Secure generation** - Utilizes crypto APIs for reliable UUID creation
 
-- Automatically generates and appends a UUID to bids before requests are sent.
-- Seamlessly integrates with Prebid.js as part of the Real Time Data (RTD) and Analytics modules.
-- Addresses programmatic advertising challenges like bidstream bloat and wasted ad spend.
-- Utilizes secure crypto APIs for reliable UUID generation.
-- Configurable via Prebid.js setConfig and enableAnalytics functions.
+## How It Works
 
-## 📝 Version History & Changes
+The Exchain IOID is an anonymous, unique, and tamper-proof identifier that is appended to RTB ad requests by publishers. This solution tackles programmatic ecosystem challenges by reducing bidstream bloat, improving sustainability, and minimizing wasted ad spend. The adapter automatically generates and appends a UUID to bid requests, leveraging secure cryptographic APIs and integrating seamlessly with Prebid.js.
 
-### v3.2.0 (Latest Release)
-- **Release Date**: [Current]
-- **Status**: Latest beta release
-- **Key Changes**:
-  - [To be updated with v3.2 specific improvements]
-  - [New features to be listed]
-  - [Performance enhancements]
-- **Migration Notes**: [Instructions for upgrading from previous versions]
+## Installation & Integration
 
-### v2.5.0 (Legacy Archive)
-- **Release Date**: [Previous]
-- **Status**: Archived for version history
-- **Features**: 
-  - UUID generation and appending to bid requests
-  - Prebid.js RTD and Analytics module integration
-  - Secure cryptographic API utilization
-
-## 🧪 Beta Testing Program
-
-### Current Beta Testing (v3.2):
-- **Environment**: Test/staging environments only
-- **Duration**: [Testing period]
-- **Feedback**: Report to [admin@exchain.co](mailto:admin@exchain.co)
-- **Focus Areas**: [Specific areas for v3.2 feedback]
-
-## Integration
-
-### 1. Import the Prebid Module
-
-You can include it as a script tag in your HTML:
+### 1. Include Prebid.js
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/prebid.js@latest/dist/not-for-prod/prebid.js"></script>  
+<script src="https://cdn.jsdelivr.net/npm/prebid.js@latest/dist/not-for-prod/prebid.js"></script>
 ```
 
-You should not use this URL in production.
+⚠️ **Note:** Do not use this URL in production. Refer to [Prebid.js Getting Started Documentation](https://docs.prebid.org/dev-docs/getting-started.html) for production setup.
 
-Refer to [Prebid.js Getting Started Documentation](https://docs.prebid.org/dev-docs/getting-started.html) for more details on the process.
-
-### 2. Build and import the Exchain Analytics Adapter
-
-To build the Exchain Analytics Adapter, run the following commands:
+### 2. Build and Include the Adapter
 
 ```bash
+# Clone and build
+git clone https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter.git
+cd exchain-analytics-adapter
 npm install
 npm run build
 ```
 
-Then you will need to include the generated `main.js` file in your HTML:
-
 ```html
-<script src="../dist/main.js"></script>
+<!-- Include the generated adapter -->
+<script src="./dist/main.js"></script>
 ```
+
+### 3. Verify Installation (Optional)
+
+Open the `example/index.html` file in your browser and check the console for verification logs:
+
+```
+🚀 ExChain Analytics Adapter v3.2 Demo Starting...
+✅ ExChain IOID successfully generated!
+📍 IOID in ortb2.site.ext.data.ioids: ["abc123-def4-5678-90ab-cdef12345678"]
+🔤 IOID in ortb2.site.keywords: "ioid=abc123-def4-5678-90ab-cdef12345678"
+```
+
+## 🧪 Beta Testing Program
+
+- **Environment**: Test/staging environments only
+- **Feedback**: Report to [admin@exchain.co](mailto:admin@exchain.co)
+- **Current Version**: v3.2.0 (Latest Release)
 
 ## ⚠️ Important Notes
 
-- **Current version is in beta testing** - not for production use
-- **Test environments only** - do not deploy in live advertising environments
-- **Data collection**: Analytics collected for improvement
+- **Beta testing only** - Not for production use
+- **Test environments only** - Do not deploy in live advertising environments
+- **Data collection**: Analytics collected for improvement purposes
 - **Support**: Available during business hours
 
-## 📞 Support
-- **v3.2 Beta Issues**: [admin@exchain.co](mailto:admin@exchain.co)
-- **General Questions**: [admin@exchain.co](mailto:admin@exchain.co)
+## 📞 Support & Contact
 
-## Contact
+- **Issues & Questions**: [admin@exchain.co](mailto:admin@exchain.co)
+- **Documentation**: This README and inline code comments
+- **Example**: See `example/index.html` for working demonstration
 
-For more information or support, please contact the maintainer at [admin@exchain.co](mailto:admin@exchain.co).
+## License
+
+Licensed under the Apache License, Version 2.0. See [LICENSE.md](LICENSE.md) for details.
+
+---
+
+**Current Version: v3.2.0** | **Released**: Latest | **Status**: Beta Testing
