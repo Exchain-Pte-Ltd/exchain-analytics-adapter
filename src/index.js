@@ -14,4 +14,28 @@
  * limitations under the License.
  */
 
-import './exchainAnalyticsAdapter/exchainAnalyticsAdapter.js'
+import { exchainPrebidModule } from './exchainAnalyticsAdapter/exchainAnalyticsAdapter.js';
+
+// Initialize the module when Prebid.js is available
+if (typeof window !== 'undefined') {
+  // Function to initialize when Prebid is ready
+  function initializeExchainAdapter() {
+    if (window.pbjs && window.pbjs.que) {
+      window.pbjs.que.push(() => {
+        exchainPrebidModule.init();
+      });
+    } else if (window.pbjs) {
+      // Prebid is available but no que, try direct initialization
+      exchainPrebidModule.init();
+    } else {
+      // Prebid not ready yet, wait a bit and try again
+      setTimeout(initializeExchainAdapter, 100);
+    }
+  }
+
+  // Start initialization process
+  initializeExchainAdapter();
+}
+
+// Export the module for manual initialization if needed
+export { exchainPrebidModule };
