@@ -34,9 +34,11 @@
  * - Minimal complexity for maximum reliability
  * 
  * @maintainer admin@exchain.co
- * @version 3.3 - Self-contained production ready
+ * @version 3.2.0 - Self-contained production ready
  */
 
+// Add module version for easier debugging
+const MODULE_VERSION = '3.2.0';
 export const MODULE_NAME = 'ExchainAnalyticsAdapter';
 
 /**
@@ -85,21 +87,37 @@ export const exchainPrebidModule = {
   name: MODULE_NAME,
 
   /**
+   * Module version for debugging
+   * @type {string}
+   */
+  version: MODULE_VERSION,
+
+  /**
    * Initialize the analytics adapter
    * Registers event handler for beforeRequestBids
+   * 
+   * @param {Object} config - Configuration options
+   * @param {boolean} config.enabled - Whether the module should be enabled (default: true)
    */
-  init: function() {
+  init: function(config = {}) {
+    // Allow publishers to disable if needed
+    if (config.enabled === false) {
+      console.log(`ExChain Analytics v${MODULE_VERSION}: Module disabled via configuration`);
+      return;
+    }
+
     const pbjs = getGlobal();
     if (!pbjs) {
-      console.warn('ExChain Analytics: Prebid.js not available');
+      console.warn(`ExChain Analytics v${MODULE_VERSION}: Prebid.js not available`);
       return;
     }
     
     try {
       // Register for beforeRequestBids event
       pbjs.onEvent('beforeRequestBids', this.onBeforeRequestBids.bind(this));
+      console.log(`ExChain Analytics v${MODULE_VERSION}: Successfully initialized`);
     } catch (error) {
-      console.error('ExChain Analytics: Error setting up event handlers:', error);
+      console.error(`ExChain Analytics v${MODULE_VERSION}: Error setting up event handlers:`, error);
     }
   },
 
@@ -120,7 +138,7 @@ export const exchainPrebidModule = {
     // Generate single UUID for this entire auction
     const ioid = generateUUID();
     if (!ioid) {
-      console.warn('ExChain Analytics: UUID generation failed, skipping IOID injection');
+      console.warn(`ExChain Analytics v${MODULE_VERSION}: UUID generation failed, skipping IOID injection`);
       return;
     }
 
@@ -172,7 +190,7 @@ export const exchainPrebidModule = {
       pbjs.setConfig({ ortb2 });
 
     } catch (error) {
-      console.error('ExChain Analytics: Error injecting IOID into global ORTB2:', error);
+      console.error(`ExChain Analytics v${MODULE_VERSION}: Error injecting IOID into global ORTB2:`, error);
     }
   }
 };

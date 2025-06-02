@@ -22,11 +22,14 @@ if (typeof window !== 'undefined') {
   function initializeExchainAdapter() {
     if (window.pbjs && window.pbjs.que) {
       window.pbjs.que.push(() => {
-        exchainPrebidModule.init();
+        // Check if global configuration is available
+        const globalConfig = window.exchainConfig || {};
+        exchainPrebidModule.init(globalConfig);
       });
     } else if (window.pbjs) {
       // Prebid is available but no que, try direct initialization
-      exchainPrebidModule.init();
+      const globalConfig = window.exchainConfig || {};
+      exchainPrebidModule.init(globalConfig);
     } else {
       // Prebid not ready yet, wait a bit and try again
       setTimeout(initializeExchainAdapter, 100);
