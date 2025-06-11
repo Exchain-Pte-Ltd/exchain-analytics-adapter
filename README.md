@@ -1,21 +1,24 @@
 # Exchain Analytics Adapter
 
-[![Latest Release](https://img.shields.io/github/v/release/Exchain-Pte-Ltd/exchain-analytics-adapter)](https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter/releases/tag/v3.2.0)
+[![Latest Release](https://img.shields.io/github/v/release/Exchain-Pte-Ltd/exchain-analytics-adapter)](https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter/releases/tag/v3.2.1)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE.md)
 
 ## 🚀 Quick Start
 
 ```bash
-# Clone the repository
-git clone https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter.git
-cd exchain-analytics-adapter
+# 1. Get Prebid.js source code
+git clone https://github.com/prebid/Prebid.js.git
+cd Prebid.js
 
-# Build the adapter
+# 2. Copy the Exchain module
+wget https://raw.githubusercontent.com/Exchain-Pte-Ltd/exchain-analytics-adapter/main/src/exchainAnalyticsAdapter/exchainAnalyticsAdapter.js -O modules/exchainAnalyticsAdapter.js
+
+# 3. Build Prebid.js with the module
 npm install
-npm run build
+gulp build --modules=exchainAnalyticsAdapter
 
-# Include in your HTML
-<script src="./dist/main.js"></script>
+# 4. Include in your HTML
+<script src="./build/dist/prebid.js"></script>
 ```
 
 ## Overview
@@ -36,7 +39,7 @@ Welcome to the **Exchain Analytics Adapter** repository! This custom Prebid.js m
 - `ortb2.site.ext.data.ioids` (array with single element)
 - `ortb2.site.keywords` (appended as "ioid={uuid}")
 
-✅ **Self-contained** - No external dependencies required  
+✅ **Prebid.js build integration** - Seamlessly integrated into Prebid.js build process  
 ✅ **Standard integration** - Uses Prebid.js `beforeRequestBids` event  
 ✅ **Secure generation** - Utilizes crypto APIs for reliable UUID creation
 
@@ -63,35 +66,53 @@ The Exchain IOID is an anonymous, unique, and tamper-proof identifier that is ap
 
 ## Installation & Integration
 
-### 1. Include Prebid.js
+### 1. Prerequisites
 
-```html
-<script src="https://cdn.jsdelivr.net/npm/prebid.js@latest/dist/not-for-prod/prebid.js"></script>
-```
-
-⚠️ **Note:** Do not use this URL in production. Refer to [Prebid.js Getting Started Documentation](https://docs.prebid.org/dev-docs/getting-started.html) for production setup.
-
-### 2. Build and Include the Adapter
+You'll need the Prebid.js source code to build with the Exchain module:
 
 ```bash
-# Clone and build
-git clone https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter.git
-cd exchain-analytics-adapter
+# Get Prebid.js source
+git clone https://github.com/prebid/Prebid.js.git
+cd Prebid.js
 npm install
-npm run build
 ```
+
+### 2. Install the Exchain Module
+
+Download the module file and place it in the Prebid.js modules directory:
+
+```bash
+# Option A: Download directly
+wget https://raw.githubusercontent.com/Exchain-Pte-Ltd/exchain-analytics-adapter/main/src/exchainAnalyticsAdapter/exchainAnalyticsAdapter.js -O modules/exchainAnalyticsAdapter.js
+
+# Option B: Copy from cloned repository
+git clone https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter.git
+cp exchain-analytics-adapter/src/exchainAnalyticsAdapter/exchainAnalyticsAdapter.js Prebid.js/modules/exchainAnalyticsAdapter.js
+```
+
+### 3. Build Prebid.js with the Module
+
+```bash
+# Build with Exchain module included
+gulp build --modules=exchainAnalyticsAdapter
+
+# Or build with multiple modules
+gulp build --modules=exchainAnalyticsAdapter,appnexusBidAdapter,googleSlrBidAdapter
+```
+
+### 4. Include in Your HTML
 
 ```html
-<!-- Include the generated adapter -->
-<script src="./dist/main.js"></script>
+<!-- Include your custom-built Prebid.js -->
+<script src="./build/dist/prebid.js"></script>
 ```
 
-### 3. Verify Installation (Optional)
+### 5. Verify Installation (Optional)
 
-Open the `example/index.html` file in your browser and check the console for verification logs:
+The module automatically initializes and logs to the console:
 
 ```
-🚀 ExChain Analytics Adapter v3.2 Demo Starting...
+ExChain Analytics v3.2.1: Successfully initialized
 ✅ ExChain IOID successfully generated!
 📍 IOID in ortb2.site.ext.data.ioids: ["abc123-def4-5678-90ab-cdef12345678"]
 🔤 IOID in ortb2.site.keywords: "ioid=abc123-def4-5678-90ab-cdef12345678"
@@ -101,10 +122,10 @@ Open the `example/index.html` file in your browser and check the console for ver
 
 ### Basic Configuration
 
-The ExChain Analytics Adapter requires **no configuration** - it works automatically once included. Simply include the script and it will:
+The ExChain Analytics Adapter requires **no configuration** - it works automatically once built into Prebid.js. The module will:
 
-1. **Auto-initialize** when Prebid.js is ready
-2. **Generate IOIDs** automatically before each auction
+1. **Auto-initialize** when Prebid.js loads
+2. **Generate IOIDs** automatically before each auction  
 3. **Inject IOIDs** into standard ORTB2 locations
 
 ### Complete Implementation Example
@@ -113,13 +134,10 @@ The ExChain Analytics Adapter requires **no configuration** - it works automatic
 <!DOCTYPE html>
 <html>
 <head>
-    <!-- 1. Include Prebid.js -->
-    <script src="https://cdn.jsdelivr.net/npm/prebid.js@latest/dist/not-for-prod/prebid.js"></script>
+    <!-- 1. Include your custom-built Prebid.js with ExChain module -->
+    <script src="./build/dist/prebid.js"></script>
     
-    <!-- 2. Include ExChain Analytics Adapter -->
-    <script src="./dist/main.js"></script>
-    
-    <!-- 3. Include Google Publisher Tag (if using GAM) -->
+    <!-- 2. Include Google Publisher Tag (if using GAM) -->
     <script src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
 </head>
 <body>
@@ -127,7 +145,7 @@ The ExChain Analytics Adapter requires **no configuration** - it works automatic
     <div id="div-gpt-ad-1234567890-0" style="width: 300px; height: 250px;"></div>
 
     <script>
-        // 5. Configure your ad units (standard Prebid setup)
+        // 3. Configure your ad units (standard Prebid setup)
         var adUnits = [{
             code: 'div-gpt-ad-1234567890-0',
             mediaTypes: {
@@ -143,7 +161,8 @@ The ExChain Analytics Adapter requires **no configuration** - it works automatic
             }]
         }];
 
-        // 6. Standard Prebid.js auction setup
+        // 4. Standard Prebid.js auction setup
+        // ExChain module automatically generates IOIDs during each auction
         pbjs.que.push(function() {
             pbjs.addAdUnits(adUnits);
             pbjs.requestBids({
@@ -157,7 +176,7 @@ The ExChain Analytics Adapter requires **no configuration** - it works automatic
             });
         });
 
-        // 7. Google Ad Manager setup (if using GAM)
+        // 5. Google Ad Manager setup (if using GAM)
         googletag.cmd.push(function() {
             googletag.defineSlot('/your-ad-unit-path', [300, 250], 'div-gpt-ad-1234567890-0')
                 .addService(googletag.pubads());
@@ -207,37 +226,32 @@ The adapter works with **all Prebid.js bidders** automatically. No bidder-specif
 
 #### Module Configuration
 ```javascript
-// Global configuration (set before including the adapter script)
+// Global configuration (set before Prebid.js loads)
 window.exchainConfig = {
   enabled: true  // Set to false to disable the module
 };
 ```
 
-#### Manual Initialization with Configuration
-```javascript
-// If you need to manually control initialization
-import { exchainPrebidModule } from './dist/main.js';
+#### Build-time Configuration
+```bash
+# Build with specific modules only
+gulp build --modules=exchainAnalyticsAdapter,appnexusBidAdapter
 
-// Initialize manually with configuration
-pbjs.que.push(function() {
-    exchainPrebidModule.init({
-        enabled: true  // Set to false to disable
-    });
-});
+# Build with debug information
+gulp build --modules=exchainAnalyticsAdapter --debug
 ```
 
 #### Version Information & Debugging
 ```javascript
-// Access module version for debugging
-import { exchainPrebidModule } from './dist/main.js';
-console.log('ExChain Analytics Version:', exchainPrebidModule.version);
+// Check module initialization status in console:
+// "ExChain Analytics v3.2.1: Successfully initialized"
+// OR  
+// "ExChain Analytics v3.2.1: Module disabled via configuration"
 
-// Check module initialization status
+// Verify module is loaded
 pbjs.que.push(function() {
-    // The module will log initialization status to console:
-    // "ExChain Analytics v3.2.0: Successfully initialized"
-    // OR
-    // "ExChain Analytics v3.2.0: Module disabled via configuration"
+    console.log('Prebid modules:', pbjs.installedModules);
+    // Should include 'exchainAnalyticsAdapter'
 });
 ```
 
@@ -354,4 +368,4 @@ Licensed under the Apache License, Version 2.0. See [LICENSE.md](LICENSE.md) for
 
 ---
 
-**Current Version: v3.2.0** | **Released**: Latest | **Status**: Production-Ready Beta
+**Current Version: v3.2.1** | **Released**: Latest | **Status**: Production-Ready Beta

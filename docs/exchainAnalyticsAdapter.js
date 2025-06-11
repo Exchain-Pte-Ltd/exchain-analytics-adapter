@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-import { getGlobal } from '../src/prebidGlobal.js';
-
 /**
- * ExChain Analytics Adapter - Prebid Build Compatible Version
+ * ExChain Analytics Adapter - Production Version
  * 
  * ✅ This is the PRODUCTION-READY version for commercial publishers
  * ✅ Clean, minimal code with standard Prebid.js event handling
  * ✅ No testing environment hooks or excessive logging
  * ✅ Self-contained - no external dependencies required
- * ✅ Compatible with Prebid.js build system
  * 
  * This module generates a single IOID per auction cycle and places it in:
  * - ortb2.site.ext.data.ioids (array with single element)
@@ -36,20 +33,48 @@ import { getGlobal } from '../src/prebidGlobal.js';
  * - No state persistence between auctions
  * - Minimal complexity for maximum reliability
  * 
- * Build Instructions:
- * 1. Copy this file to modules/exchainAnalyticsAdapter.js in Prebid source
- * 2. Run: gulp build --modules=exchainAnalyticsAdapter
- * 
  * @maintainer admin@exchain.co
- * @version 3.2.1 - Prebid build compatible
+ * @version 3.3 - Self-contained production ready
  */
 
-// Add module version for easier debugging
-const MODULE_VERSION = '3.2.1';
-export const MODULE_NAME = 'exchainAnalyticsAdapter';
+export const MODULE_NAME = 'ExchainAnalyticsAdapter';
 
 /**
- * ExChain Analytics Module - Prebid Build Compatible Version
+ * Get reference to the global Prebid.js instance
+ * @returns {Object|undefined} Global pbjs object or undefined if not available
+ */
+function getGlobal() {
+  return window.pbjs || window.top.pbjs;
+}
+
+/**
+ * Generates a secure UUIDv4
+ * @returns {string | undefined} UUID string or undefined if crypto not available
+ */
+function generateUUID() {
+  // Use crypto for secure random numbers
+  if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
+    const arr = new Uint8Array(16);
+    crypto.getRandomValues(arr);
+
+    // Set the version to 4 (UUIDv4)
+    arr[6] = (arr[6] & 0x0f) | 0x40;
+    // Set the variant to RFC 4122
+    arr[8] = (arr[8] & 0x3f) | 0x80;
+
+    // Convert array to hexadecimal string format
+    return [...arr].map((b, i) => {
+      const hex = b.toString(16).padStart(2, '0');
+      if (i === 4 || i === 6 || i === 8 || i === 10) return '-' + hex;
+      return hex;
+    }).join('');
+  }
+  
+  return undefined;
+}
+
+/**
+ * ExChain Analytics Module - Production Version
  * Generates one IOID per auction and places it in global ORTB2 locations
  */
 export const exchainPrebidModule = {
@@ -60,63 +85,21 @@ export const exchainPrebidModule = {
   name: MODULE_NAME,
 
   /**
-   * Module version for debugging
-   * @type {string}
-   */
-  version: MODULE_VERSION,
-
-  /**
-   * Generates a secure UUIDv4
-   * @returns {string | undefined} UUID string or undefined if crypto not available
-   */
-  generateUUID: function() {
-    // Use crypto for secure random numbers
-    if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
-      const arr = new Uint8Array(16);
-      crypto.getRandomValues(arr);
-
-      // Set the version to 4 (UUIDv4)
-      arr[6] = (arr[6] & 0x0f) | 0x40;
-      // Set the variant to RFC 4122
-      arr[8] = (arr[8] & 0x3f) | 0x80;
-
-      // Convert array to hexadecimal string format
-      return [...arr].map((b, i) => {
-        const hex = b.toString(16).padStart(2, '0');
-        if (i === 4 || i === 6 || i === 8 || i === 10) return '-' + hex;
-        return hex;
-      }).join('');
-    }
-    
-    return undefined;
-  },
-
-  /**
    * Initialize the analytics adapter
    * Registers event handler for beforeRequestBids
-   * 
-   * @param {Object} config - Configuration options
-   * @param {boolean} config.enabled - Whether the module should be enabled (default: true)
    */
-  init: function(config = {}) {
-    // Allow publishers to disable if needed
-    if (config.enabled === false) {
-      console.log(`ExChain Analytics v${MODULE_VERSION}: Module disabled via configuration`);
-      return;
-    }
-
+  init: function() {
     const pbjs = getGlobal();
     if (!pbjs) {
-      console.warn(`ExChain Analytics v${MODULE_VERSION}: Prebid.js not available`);
+      console.warn('ExChain Analytics: Prebid.js not available');
       return;
     }
     
     try {
       // Register for beforeRequestBids event
       pbjs.onEvent('beforeRequestBids', this.onBeforeRequestBids.bind(this));
-      console.log(`ExChain Analytics v${MODULE_VERSION}: Successfully initialized`);
     } catch (error) {
-      console.error(`ExChain Analytics v${MODULE_VERSION}: Error setting up event handlers:`, error);
+      console.error('ExChain Analytics: Error setting up event handlers:', error);
     }
   },
 
@@ -135,9 +118,9 @@ export const exchainPrebidModule = {
    */
   generateAndInjectIOID: function() {
     // Generate single UUID for this entire auction
-    const ioid = this.generateUUID();
+    const ioid = generateUUID();
     if (!ioid) {
-      console.warn(`ExChain Analytics v${MODULE_VERSION}: UUID generation failed, skipping IOID injection`);
+      console.warn('ExChain Analytics: UUID generation failed, skipping IOID injection');
       return;
     }
 
@@ -189,26 +172,10 @@ export const exchainPrebidModule = {
       pbjs.setConfig({ ortb2 });
 
     } catch (error) {
-      console.error(`ExChain Analytics v${MODULE_VERSION}: Error injecting IOID into global ORTB2:`, error);
+      console.error('ExChain Analytics: Error injecting IOID into global ORTB2:', error);
     }
   }
 };
 
 // Export for analytics adapter interface
-export default exchainPrebidModule;
-
-// Register as a Prebid module
-getGlobal().installedModules.push(MODULE_NAME);
-
-// Auto-initialize when Prebid loads
-function initModule() {
-  const pbjs = getGlobal();
-  if (pbjs && pbjs.onEvent) {
-    exchainPrebidModule.init();
-  }
-}
-
-// Use Prebid's queue system
-getGlobal().que.push(() => {
-  initModule();
-});
+export default exchainPrebidModule; 

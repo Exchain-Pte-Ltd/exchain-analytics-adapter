@@ -1,18 +1,71 @@
+<!DOCTYPE html>
 <html>
   <head>
-    <script src="https://cdn.jsdelivr.net/npm/prebid.js@latest/dist/not-for-prod/prebid.js"></script>
+    <title>ExChain Analytics Adapter v3.2.1 - Prebid Build Demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- 
+    🔧 IMPORTANT: This example assumes you've built Prebid.js with ExChain module included
+    
+    Build Steps:
+    1. git clone https://github.com/prebid/Prebid.js.git
+    2. cd Prebid.js
+    3. wget https://raw.githubusercontent.com/Exchain-Pte-Ltd/exchain-analytics-adapter/main/src/exchainAnalyticsAdapter/exchainAnalyticsAdapter.js -O modules/exchainAnalyticsAdapter.js
+    4. gulp build --modules=exchainAnalyticsAdapter,appnexus (add your bidders)
+    5. Copy build/dist/prebid.js to this example directory
+    -->
+    
+    <!-- Load your custom-built Prebid.js (with ExChain module included) -->
+    <script src="./prebid.js"></script>
+    
+    <!-- Google Publisher Tag -->
     <script src="https://securepubads.g.doubleclick.net/tag/js/gpt.js"></script>
-    <script src="../dist/main.js"></script>
+    
+    <!-- Demo script -->
     <script src="./index.js"></script>
+    
+    <style>
+      body { font-family: Arial, sans-serif; margin: 20px; }
+      .instructions { background: #f5f5f5; padding: 15px; margin: 20px 0; border-radius: 5px; }
+      .ad-slot { border: 2px dashed #ccc; min-height: 250px; padding: 10px; text-align: center; background: #fafafa; }
+      .console-note { background: #e8f4fd; padding: 10px; margin: 10px 0; border-left: 4px solid #2196F3; }
+    </style>
   </head>
 
   <body>
-    <div id='div-1' style="min-height:250px;">
+    <h1>🚀 ExChain Analytics Adapter v3.2.1 Demo</h1>
+    
+    <div class="instructions">
+      <h3>📋 Setup Instructions:</h3>
+      <ol>
+        <li>Build Prebid.js with ExChain module: <code>gulp build --modules=exchainAnalyticsAdapter,appnexus</code></li>
+        <li>Copy the built <code>prebid.js</code> file to this directory</li>
+        <li>Open this page and check browser console for IOID generation logs</li>
+      </ol>
+    </div>
+    
+    <div class="console-note">
+      <strong>💡 Check Browser Console:</strong> Open DevTools Console to see real-time IOID generation and ORTB2 injection logs
+    </div>
+    
+    <h3>📺 Ad Slot (300x250)</h3>
+    <div id='div-1' class="ad-slot">
+      <p>Ad will load here after bid process completes...</p>
       <script type='text/javascript'>
         googletag.cmd.push(function() {
           googletag.display('div-1');
         });
       </script>
+    </div>
+    
+    <div class="instructions">
+      <h3>🔍 What to Look For:</h3>
+      <ul>
+        <li><strong>Console Logs:</strong> IOID generation messages and ORTB2 values</li>
+        <li><strong>Network Tab:</strong> Bid requests should include IOID in keywords</li>
+        <li><strong>Prebid Debug:</strong> <code>pbjs.getConfig('ortb2')</code> should show IOIDs array</li>
+      </ul>
     </div>
   </body>
 </html>
