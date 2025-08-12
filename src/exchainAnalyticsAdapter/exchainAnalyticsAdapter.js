@@ -25,18 +25,19 @@ import { getGlobal } from '../src/prebidGlobal.js';
  * ✅ Follows same pattern as ortb2Imp.ext.tid
  * ✅ Hooks into requestBids preparation phase
  * ✅ Maintains standard module deployment process
+ * ✅ NEW v3.2.9: Full Prebid 8 compatibility - preserves all function properties
  * 
- * Key Innovation in v3.2.8:
- * - Pre-generates IOID and injects into ORTB2 BEFORE requestBids() executes
- * - Uses same timing mechanism as Transaction ID generation
- * - Leverages Prebid's built-in pre-auction configuration phase
- * - No event dependencies = no race conditions
+ * Key Innovation in v3.2.9:
+ * - Preserves ALL properties attached to requestBids by other modules
+ * - Compatible with videoModule's "before" function in Prebid 8
+ * - Maintains backward compatibility with Prebid 9/10
+ * - Uses Object.assign and property descriptor copying for full preservation
  * 
  * @maintainer admin@exchain.co
- * @version 3.2.8 - Pre-generation pattern (race condition eliminated)
+ * @version 3.2.9 - Prebid 8 compatibility (preserves module properties)
  */
 
-const MODULE_VERSION = '3.2.8';
+const MODULE_VERSION = '3.2.9';
 const MODULE_NAME = 'exchainAnalyticsAdapter';
 
 let moduleInitialized = false;
@@ -137,8 +138,59 @@ function preGenerateIOID(source = 'pre-generation') {
 }
 
 /**
+ * Creates a function wrapper that preserves ALL properties from the original function
+ * This is crucial for Prebid 8 compatibility where modules attach properties like 'before'
+ * @param {Function} originalFn - The original function to wrap
+ * @param {Function} wrapper - The wrapper function
+ * @returns {Function} The wrapped function with all original properties preserved
+ */
+function createPropertyPreservingWrapper(originalFn, wrapper) {
+  try {
+    // Method 1: Copy all enumerable properties
+    Object.keys(originalFn).forEach(key => {
+      wrapper[key] = originalFn[key];
+    });
+    
+    // Method 2: Copy property descriptors (handles non-enumerable properties)
+    const descriptors = Object.getOwnPropertyDescriptors(originalFn);
+    Object.keys(descriptors).forEach(key => {
+      if (key !== 'length' && key !== 'name' && key !== 'prototype') {
+        try {
+          Object.defineProperty(wrapper, key, descriptors[key]);
+        } catch (e) {
+          // Fallback for non-configurable properties
+          wrapper[key] = originalFn[key];
+        }
+      }
+    });
+    
+    // Method 3: Copy prototype if it exists
+    if (originalFn.prototype) {
+      wrapper.prototype = originalFn.prototype;
+    }
+    
+    // Method 4: Use Object.assign as additional fallback
+    Object.assign(wrapper, originalFn);
+    
+    return wrapper;
+  } catch (error) {
+    logWarn(`ExChain Analytics v${MODULE_VERSION}: Error preserving function properties:`, error);
+    // Fallback: simple property copy
+    Object.keys(originalFn).forEach(key => {
+      try {
+        wrapper[key] = originalFn[key];
+      } catch (e) {
+        // Skip non-configurable properties
+      }
+    });
+    return wrapper;
+  }
+}
+
+/**
  * Hook into requestBids to ensure IOID exists before auction starts
  * This is the same timing used by Transaction ID generation
+ * NEW: Now preserves ALL function properties for Prebid 8 compatibility
  */
 function setupRequestBidsPreGeneration() {
   const pbjs = getGlobal();
@@ -148,17 +200,41 @@ function setupRequestBidsPreGeneration() {
     // Store original requestBids function
     const originalRequestBids = pbjs.requestBids;
     
-    // Override requestBids with pre-generation
-    pbjs.requestBids = function(requestObj) {
+    // Log what properties exist on the original function (for debugging)
+    const originalProperties = Object.keys(originalRequestBids);
+    if (originalProperties.length > 0) {
+      logInfo(`ExChain Analytics v${MODULE_VERSION}: Original requestBids has properties:`, originalProperties);
+    }
+    
+    // Create wrapper function that calls our pre-generation logic
+    function wrappedRequestBids(requestObj) {
       // Pre-generate IOID if it doesn't exist
       // This happens BEFORE any auction processing begins
       preGenerateIOID('requestBids-pre-generation');
       
       // Call original requestBids with all original arguments
       return originalRequestBids.apply(this, arguments);
-    };
+    }
     
-    logInfo(`ExChain Analytics v${MODULE_VERSION}: RequestBids pre-generation hook installed`);
+    // Preserve ALL properties from the original function
+    // This is critical for Prebid 8 compatibility (videoModule's 'before' function, etc.)
+    const propertyPreservedWrapper = createPropertyPreservingWrapper(originalRequestBids, wrappedRequestBids);
+    
+    // Replace the function
+    pbjs.requestBids = propertyPreservedWrapper;
+    
+    // Verify properties were preserved (for debugging)
+    const preservedProperties = Object.keys(pbjs.requestBids);
+    if (originalProperties.length > 0) {
+      const missingProperties = originalProperties.filter(prop => !(prop in pbjs.requestBids));
+      if (missingProperties.length === 0) {
+        logInfo(`ExChain Analytics v${MODULE_VERSION}: All ${originalProperties.length} properties preserved successfully`);
+      } else {
+        logWarn(`ExChain Analytics v${MODULE_VERSION}: Missing properties after override:`, missingProperties);
+      }
+    }
+    
+    logInfo(`ExChain Analytics v${MODULE_VERSION}: RequestBids pre-generation hook installed with property preservation`);
     return true;
   } catch (error) {
     logError(`ExChain Analytics v${MODULE_VERSION}: Error setting up requestBids pre-generation:`, error);
@@ -185,6 +261,61 @@ function performImmediatePreGeneration() {
 }
 
 /**
+ * Validate that our function override preserves critical properties
+ * This is particularly important for Prebid 8 compatibility
+ * @returns {Object} Validation results
+ */
+function validateFunctionOverride() {
+  const pbjs = getGlobal();
+  if (!pbjs || !pbjs.requestBids) {
+    return { valid: false, reason: 'pbjs.requestBids not available' };
+  }
+  
+  const results = {
+    valid: true,
+    properties: [],
+    issues: []
+  };
+  
+  try {
+    // Check for common properties that modules attach
+    const criticalProperties = [
+      'before',           // videoModule in Prebid 8
+      'priceFloorHook',   // priceFloors module
+      'userIdHook',       // userId module
+      'consentHook',      // tcfControl module
+      'length',           // Function.length
+      'name'              // Function.name
+    ];
+    
+    criticalProperties.forEach(prop => {
+      if (prop in pbjs.requestBids) {
+        results.properties.push({
+          name: prop,
+          type: typeof pbjs.requestBids[prop],
+          exists: true
+        });
+      } else if (prop === 'before') {
+        // 'before' is critical for videoModule
+        results.issues.push(`Critical property '${prop}' missing - may break videoModule`);
+      }
+    });
+    
+    // Check if the function is still callable
+    if (typeof pbjs.requestBids !== 'function') {
+      results.valid = false;
+      results.issues.push('requestBids is no longer a function');
+    }
+    
+  } catch (error) {
+    results.valid = false;
+    results.issues.push(`Validation error: ${error.message}`);
+  }
+  
+  return results;
+}
+
+/**
  * Initialize the module with pre-generation strategy
  */
 function init() {
@@ -203,13 +334,13 @@ function init() {
     // Strategy 1: Immediate pre-generation (like Transaction IDs)
     performImmediatePreGeneration();
     
-    // Strategy 2: Hook requestBids for future auctions
+    // Strategy 2: Hook requestBids for future auctions (with property preservation)
     setupRequestBidsPreGeneration();
     
     moduleInitialized = true;
     prebidReady = true;
     
-    logInfo(`ExChain Analytics v${MODULE_VERSION}: Pre-generation strategy initialized successfully`);
+    logInfo(`ExChain Analytics v${MODULE_VERSION}: Pre-generation strategy initialized successfully (Prebid 8 compatible)`);
     
     // Show current state
     const ortb2 = pbjs.getConfig('ortb2') || {};
@@ -233,12 +364,42 @@ export const exchainAnalyticsModule = {
   debug: {
     hasExistingIOID,
     preGenerateIOID,
-    isReady: () => prebidReady && moduleInitialized
+    validateFunctionOverride,
+    isReady: () => prebidReady && moduleInitialized,
+    
+    // New debugging utilities for Prebid 8 compatibility
+    checkRequestBidsProperties: () => {
+      const pbjs = getGlobal();
+      if (!pbjs || !pbjs.requestBids) return null;
+      
+      const props = {};
+      Object.keys(pbjs.requestBids).forEach(key => {
+        props[key] = typeof pbjs.requestBids[key];
+      });
+      return props;
+    },
+    
+    testVideoModuleCompatibility: () => {
+      const pbjs = getGlobal();
+      if (!pbjs || !pbjs.requestBids) return { compatible: false, reason: 'requestBids not available' };
+      
+      if (typeof pbjs.requestBids.before === 'function') {
+        try {
+          // Don't actually call it, just check if it exists and is callable
+          return { compatible: true, hasBeforeFunction: true };
+        } catch (error) {
+          return { compatible: false, reason: `before function error: ${error.message}` };
+        }
+      } else {
+        return { compatible: true, hasBeforeFunction: false, note: 'No before function (normal for some configurations)' };
+      }
+    }
   }
 };
 
 /**
  * Multi-phase initialization strategy
+ * Enhanced for better Prebid 8 compatibility detection
  */
 function initializeModule() {
   const pbjs = getGlobal();
@@ -253,6 +414,16 @@ function initializeModule() {
     pbjs.que.push(() => {
       if (!moduleInitialized) {
         init();
+        
+        // Post-initialization validation for Prebid 8
+        setTimeout(() => {
+          const validation = validateFunctionOverride();
+          if (!validation.valid) {
+            logWarn(`ExChain Analytics v${MODULE_VERSION}: Post-init validation issues:`, validation.issues);
+          } else if (validation.properties.length > 0) {
+            logInfo(`ExChain Analytics v${MODULE_VERSION}: Function properties preserved:`, validation.properties.map(p => `${p.name}(${p.type})`).join(', '));
+          }
+        }, 100);
       }
     });
   }
@@ -264,12 +435,23 @@ function initializeModule() {
       if (pbjs && pbjs.getConfig && pbjs.setConfig && !moduleInitialized) {
         clearInterval(pollForPrebid);
         init();
+        
+        // Validate after polling initialization
+        setTimeout(() => {
+          const validation = validateFunctionOverride();
+          if (validation.issues.length > 0) {
+            logWarn(`ExChain Analytics v${MODULE_VERSION}: Polling init validation issues:`, validation.issues);
+          }
+        }, 100);
       }
     }, 100);
     
     // Stop polling after 10 seconds
     setTimeout(() => {
       clearInterval(pollForPrebid);
+      if (!moduleInitialized) {
+        logWarn(`ExChain Analytics v${MODULE_VERSION}: Failed to initialize after 10 seconds`);
+      }
     }, 10000);
   }
 }
@@ -279,8 +461,18 @@ if (getGlobal() && getGlobal().installedModules) {
   getGlobal().installedModules.push(MODULE_NAME);
 }
 
-// Initialize using multi-phase strategy
-initializeModule();
+// Check for global configuration override
+if (typeof window !== 'undefined' && window.exchainConfig) {
+  if (window.exchainConfig.enabled === false) {
+    logInfo(`ExChain Analytics v${MODULE_VERSION}: Disabled via global config`);
+  } else {
+    // Initialize using multi-phase strategy
+    initializeModule();
+  }
+} else {
+  // Initialize using multi-phase strategy
+  initializeModule();
+}
 
 // Export for module system
 export default exchainAnalyticsModule;

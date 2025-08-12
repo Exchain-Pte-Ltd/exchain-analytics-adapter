@@ -1,6 +1,6 @@
 {
   "name": "exchain-analytics-adapter",
-  "version": "3.2.8",
+  "version": "3.2.9",
   "description": "Exchain Analytics Adapter - Prebid.js Build Compatible Module for Publisher Integration",
   "main": "src/index.js",
   "scripts": {

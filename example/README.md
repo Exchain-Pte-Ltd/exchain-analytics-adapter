@@ -1,4 +1,4 @@
-# ExChain Analytics Adapter v3.2.8 - Integration Example
+# ExChain Analytics Adapter v3.2.9 - Integration Example
 
 This example demonstrates the **ExChain Analytics Adapter** working as a **Prebid.js built-in module** (not a standalone package).
 
@@ -287,7 +287,7 @@ pbjs.requestBids({
 - **Beta Testing Issues**: admin@exchain.co
 - **Integration Questions**: admin@exchain.co  
 - **GitHub Issues**: https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter/issues
-- **Version**: 3.2.8 (Prebid Build Compatible)
+- **Version**: 3.2.9 (Prebid 8 Compatible)
 
 ## ⚠️ Beta Testing Notes
 

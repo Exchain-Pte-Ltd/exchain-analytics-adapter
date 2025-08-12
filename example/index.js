@@ -1,4 +1,4 @@
-// ExChain Analytics Adapter v3.2.8 - Prebid Build Demo
+// ExChain Analytics Adapter v3.2.9 - Prebid Build Demo
 // This demo shows the ExChain module working when built into Prebid.js
 
 var sizes = [
@@ -31,8 +31,8 @@ googletag.cmd.push(function() {
 var pbjs = pbjs || {};
 pbjs.que = pbjs.que || [];
 
-// ExChain Analytics v3.2.8 Demo - Built into Prebid.js
-console.log('🚀 ExChain Analytics Adapter v3.2.8 Demo Starting...');
+// ExChain Analytics v3.2.9 Demo - Built into Prebid.js
+console.log('🚀 ExChain Analytics Adapter v3.2.9 Demo Starting...');
 console.log('📦 Module is built into Prebid.js - no separate loading required!');
 
 // Check if ExChain module is available
@@ -107,7 +107,7 @@ googletag.cmd.push(function() {
 
 // Enhanced logging for debugging
 console.log(`
-🔍 ExChain Analytics v3.2.8 Demo Instructions:
+🔍 ExChain Analytics v3.2.9 Demo Instructions:
    
    📋 Setup:
    1. Build Prebid: gulp build --modules=exchainAnalyticsAdapter,appnexus

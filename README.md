@@ -11,7 +11,7 @@ git clone https://github.com/prebid/Prebid.js.git
 cd Prebid.js
 
 # 2. Copy the Exchain module
-wget https://raw.githubusercontent.com/Exchain-Pte-Ltd/exchain-analytics-adapter/main/src/exchainAnalyticsAdapter/exchain_analytics_v3.2.8.js -O modules/exchainAnalyticsAdapter.js
+wget https://raw.githubusercontent.com/Exchain-Pte-Ltd/exchain-analytics-adapter/main/src/exchainAnalyticsAdapter/exchainAnalyticsAdapter.js -O modules/exchainAnalyticsAdapter.js
 
 # 3. Build Prebid.js with the module
 npm install
@@ -31,21 +31,21 @@ This Prebid.js module introduces a **Pre-Generated IOID (Impression Opportunity 
 - Compliant with Prebid.js standards
 - Automatically added to `ortb2.site.ext.data.ioids` and `ortb2.site.keywords`
 
-### 🔄 What’s New in v3.2.8
+### 🔄 What's New in v3.2.9
 
-> Version 3.2.8 introduces a **race-condition-free implementation** using a **pre-auction generation hook**, similar to how Prebid assigns transaction IDs.
+> Version 3.2.9 adds **Prebid 8 compatibility** by preserving all function properties when overriding `requestBids()`, specifically fixing videoModule compatibility issues.
 
-- ✅ **IOID is injected *before* `requestBids()`**
-- ✅ **No reliance on Prebid events (e.g. `beforeRequestBids`)**
-- ✅ **Same installation method as v3.2.0**
-- ✅ **No behavior changes for publishers**
-- ✅ **Multi-phase fallback strategy** ensures reliable initialization
+- ✅ **Prebid 8 Compatibility** - Preserves `before` function for videoModule  
+- ✅ **Property Preservation** - All requestBids properties maintained during override
+- ✅ **Enhanced Debugging** - New validation and compatibility checking utilities
+- ✅ **Backward Compatible** - Works with Prebid 8, 9, and 10
+- ✅ **Zero Breaking Changes** - Drop-in replacement for v3.2.8
 
 ## 📌 Module Details
 
 - **Module Name:** `exchainAnalyticsAdapter`
 - **Maintainer:** [admin@exchain.co](mailto:admin@exchain.co)
-- **Latest Version:** `v3.2.8`
+- **Latest Version:** `v3.2.9`
 - **Module Type:** Analytics Adapter
 
 ## ✨ Key Features
@@ -70,7 +70,7 @@ npm install
 
 ```bash
 # Download latest Exchain module
-wget https://raw.githubusercontent.com/Exchain-Pte-Ltd/exchain-analytics-adapter/main/src/exchainAnalyticsAdapter/exchain_analytics_v3.2.8.js -O modules/exchainAnalyticsAdapter.js
+wget https://raw.githubusercontent.com/Exchain-Pte-Ltd/exchain-analytics-adapter/main/src/exchainAnalyticsAdapter/exchainAnalyticsAdapter.js -O modules/exchainAnalyticsAdapter.js
 ```
 
 ### 3. Build Prebid.js with the Module
@@ -168,5 +168,5 @@ See [LICENSE.md](LICENSE.md) for details.
 
 ---
 
-**Latest Stable Version: v3.2.8**  
+**Latest Stable Version: v3.2.9**  
 Status: ✅ Production Ready
