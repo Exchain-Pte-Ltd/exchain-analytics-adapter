@@ -49,7 +49,7 @@ var adUnits = [{
 
 Check browser console for:
 ```
-✅ ExChain Analytics Adapter v3.2.1: Successfully initialized
+✅ ExChain Analytics Adapter v3.2.8: Successfully initialized
 ✅ ExChain IOID successfully generated and injected!
 📍 IOID in ortb2.site.ext.data.ioids: ["550e8400-e29b-41d4-a716-446655440000"]
 🔤 IOID in ortb2.site.keywords: "ioid=550e8400-e29b-41d4-a716-446655440000"

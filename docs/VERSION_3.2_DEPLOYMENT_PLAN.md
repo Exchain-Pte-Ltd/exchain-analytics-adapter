@@ -199,9 +199,9 @@ npm run build
 git checkout main
 # Make improvements/fixes
 git commit -m "Update: [description]"
-git tag -a v3.2.1 -m "Version 3.2.1 - Update"
+git tag -a v3.2.8 -m "Version 3.2.8 - Update"
 git push origin main
-git push origin v3.2.1
+git push origin v3.2.8
 ```
 
 ### For v2.5 Legacy (Emergency Only):

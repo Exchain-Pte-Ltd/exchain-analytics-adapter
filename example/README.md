@@ -1,4 +1,4 @@
-# ExChain Analytics Adapter v3.2.1 - Integration Example
+# ExChain Analytics Adapter v3.2.8 - Integration Example
 
 This example demonstrates the **ExChain Analytics Adapter** working as a **Prebid.js built-in module** (not a standalone package).
 
@@ -122,7 +122,7 @@ The module places IOIDs in exactly these locations:
 
 ### Expected Console Output
 ```
-🚀 ExChain Analytics Adapter v3.2.1 Demo Starting...
+🚀 ExChain Analytics Adapter v3.2.8 Demo Starting...
 📦 Module is built into Prebid.js - no separate loading required!
 📋 Prebid.js ready, checking for ExChain module...
 ✅ ExChain Analytics Adapter successfully loaded in Prebid build
@@ -251,7 +251,7 @@ pbjs.requestBids({
 
 ## 📋 Key Differences from v3.2.0
 
-| v3.2.0 (Standalone) | v3.2.1 (Prebid Build) |
+| v3.2.0 (Standalone) | v3.2.8 (Prebid Build) |
 |---------------------|------------------------|
 | Separate webpack build | Built into Prebid.js |
 | `<script src="dist/main.js">` | Included automatically |
@@ -287,7 +287,7 @@ pbjs.requestBids({
 - **Beta Testing Issues**: admin@exchain.co
 - **Integration Questions**: admin@exchain.co  
 - **GitHub Issues**: https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter/issues
-- **Version**: 3.2.1 (Prebid Build Compatible)
+- **Version**: 3.2.8 (Prebid Build Compatible)
 
 ## ⚠️ Beta Testing Notes
 
