@@ -61,3 +61,6 @@ Thumbs.db
 # Testing/debugging files
 *.test.js
 debug.log
+
+# Internal development documentation
+docs/
