@@ -1,13 +1,13 @@
 {
   "name": "exchain-analytics-adapter",
-  "version": "3.2.9",
-  "description": "Exchain Analytics Adapter - Prebid.js Build Compatible Module for Publisher Integration",
-  "main": "src/index.js",
+  "version": "3.2.10",
+  "description": "Exchain Analytics Adapter v3.2.10 - Prebid.js module with unique IOID generation per auction cycle",
+  "main": "src/exchainAnalyticsAdapter/exchainAnalyticsAdapter.js",
   "scripts": {
-    "install-instructions": "echo \"📋 Installation: Copy src/index.js to your Prebid.js modules/ directory and run: gulp build --modules=exchainAnalyticsAdapter\"",
-    "copy-module": "echo \"ℹ️  Copy this file to your Prebid build: src/index.js -> modules/exchainAnalyticsAdapter.js\"",
+    "install-instructions": "echo \"📋 Installation: Copy src/exchainAnalyticsAdapter/exchainAnalyticsAdapter.js to your Prebid.js modules/ directory and run: gulp build --modules=exchainAnalyticsAdapter\"",
+    "copy-module": "echo \"ℹ️  Copy this file to your Prebid build: src/exchainAnalyticsAdapter/exchainAnalyticsAdapter.js -> modules/exchainAnalyticsAdapter.js\"",
     "prebid-build-help": "echo \"🔧 Build command: gulp build --modules=exchainAnalyticsAdapter,bidderA,bidderB (add your other modules)\"",
-    "test": "echo \"✅ Module includes built-in error handling and console logging for debugging\""
+    "test": "echo \"✅ Module includes built-in error handling, console logging, and debug utilities for testing IOID uniqueness\""
   },
   "keywords": [
     "prebid",
@@ -17,7 +17,9 @@
     "uuid",
     "ortb2",
     "exchain",
-    "header-bidding"
+    "header-bidding",
+    "auction-tracking",
+    "unique-identifiers"
   ],
   "author": "EXCHAIN PTE. LTD. <admin@exchain.co>",
   "license": "Apache-2.0",

@@ -1,18 +1,25 @@
-# ExChain Analytics Adapter v3.2.9 - Integration Example
+# ExChain Analytics Adapter v3.2.10 - Integration Example
 
 This example demonstrates the **ExChain Analytics Adapter** working as a **Prebid.js built-in module** (not a standalone package).
+
+## 🔄 New in v3.2.10
+
+**Critical Bug Fix:** Now generates **unique IOID per auction cycle** (previously reused same IOID).
+- ✅ Each `pbjs.requestBids()` call generates fresh IOID
+- ✅ Follows same pattern as Prebid's Transaction IDs
+- ✅ Real-time uniqueness verification in example
+- ✅ Enhanced debug utilities for testing
 
 ## 📁 Module Structure
 
 ```
 exchain-analytics-adapter/
 ├── src/
-│   ├── index.js                          🎯 Prebid module entry point
 │   └── exchainAnalyticsAdapter/
-│       └── exchainAnalyticsAdapter.js    🎯 Module implementation
+│       └── exchainAnalyticsAdapter.js    🎯 Module implementation (v3.2.10)
 └── example/
-    ├── index.html                        🎯 Demo page
-    ├── index.js                          🎯 Demo with debugging  
+    ├── index.html                        🎯 Demo page with uniqueness testing
+    ├── index.js                          🎯 Demo with IOID tracking & debugging  
     └── README.md                         🎯 This guide
 ```
 
@@ -20,51 +27,18 @@ exchain-analytics-adapter/
 
 ### 1. Build Prebid.js with ExChain Module
 
-You have **two options** for copying the ExChain module to your Prebid build:
-
-#### **Option A: Copy Entry Point** (Recommended)
 ```bash
 # Clone Prebid.js source
 git clone https://github.com/prebid/Prebid.js.git
 cd Prebid.js
 
-# Download ExChain module entry point
-curl -o modules/exchainAnalyticsAdapter.js \
-  https://raw.githubusercontent.com/Exchain-Pte-Ltd/exchain-analytics-adapter/main/src/index.js
-
-# Build Prebid with ExChain + your bidders
-gulp build --modules=exchainAnalyticsAdapter,appnexus,rubicon
-# Replace 'appnexus,rubicon' with your actual bidders
-```
-
-#### **Option B: Copy Implementation Directly** (Alternative)
-```bash
-# Clone Prebid.js source
-git clone https://github.com/prebid/Prebid.js.git
-cd Prebid.js
-
-# Download ExChain module implementation directly
+# Download ExChain v3.2.10 module
 curl -o modules/exchainAnalyticsAdapter.js \
   https://raw.githubusercontent.com/Exchain-Pte-Ltd/exchain-analytics-adapter/main/src/exchainAnalyticsAdapter/exchainAnalyticsAdapter.js
 
 # Build Prebid with ExChain + your bidders
 gulp build --modules=exchainAnalyticsAdapter,appnexus,rubicon
-```
-
-#### **Option C: Local Development** (If you have the repo)
-```bash
-# Clone Prebid.js source
-git clone https://github.com/prebid/Prebid.js.git
-cd Prebid.js
-
-# Copy from local ExChain repo (choose one):
-# Entry point approach:
-cp /path/to/exchain-analytics-adapter/src/index.js modules/exchainAnalyticsAdapter.js
-# OR implementation approach:
-cp /path/to/exchain-analytics-adapter/src/exchainAnalyticsAdapter/exchainAnalyticsAdapter.js modules/exchainAnalyticsAdapter.js
-
-# Build
-gulp build --modules=exchainAnalyticsAdapter,yourBidder1,yourBidder2
+# Replace 'appnexus,rubicon' with your actual bidders
 ```
 
 ### 2. Copy Built File to Example
@@ -95,12 +69,19 @@ php -S localhost:8000
 
 ## 🔍 What the Example Shows
 
+### v3.2.10 Features Demonstrated
+- **Unique IOID Generation**: Each auction gets different IOID
+- **Real-time Uniqueness Verification**: Automatic duplicate detection
+- **IOID History Tracking**: Shows all generated IOIDs
+- **Debug Utilities**: Test uniqueness with built-in functions
+
 ### Real-time Console Logging
 Open browser **DevTools Console** to see:
-- ✅ **Module Loading**: Confirmation that ExChain module is in Prebid build
-- ⚡ **Event Trigger**: `beforeRequestBids` event fires ExChain IOID generation
-- 📍 **ORTB2 Injection**: IOIDs placed in `ortb2.site.ext.data.ioids` array
+- ✅ **Module Loading**: Confirmation that ExChain v3.2.10 is in Prebid build
+- ⚡ **Event Trigger**: `auctionInit` event fires ExChain IOID generation
+- 🔍 **ORTB2 Injection**: IOIDs placed in `ortb2.site.ext.data.ioids` array
 - 🔤 **Keywords Injection**: IOIDs appended to `ortb2.site.keywords` string
+- 🎉 **Uniqueness Confirmation**: "UNIQUE IOID confirmed!" messages
 - 💰 **Bid Responses**: Confirmation IOIDs are included in bid requests
 
 ### ORTB2 Structure Generated
@@ -111,38 +92,77 @@ The module places IOIDs in exactly these locations:
     "site": {
       "ext": {
         "data": {
-          "ioids": ["550e8400-e29b-41d4-a716-446655440000"]  // Array with single UUID
+          "ioids": ["550e8400-e29b-41d4-a716-446655440000"]  // Fresh UUID per auction
         }
       },
-      "keywords": "existing,keywords,ioid=550e8400-e29b-41d4-a716-446655440000"  // Appended to existing
+      "keywords": "existing,keywords,ioid=550e8400-e29b-41d4-a716-446655440000"  // Updated per auction
     }
   }
 }
 ```
 
-### Expected Console Output
+### Expected Console Output (v3.2.10)
 ```
-🚀 ExChain Analytics Adapter v3.2.8 Demo Starting...
+🚀 ExChain Analytics Adapter v3.2.10 Demo Starting...
 📦 Module is built into Prebid.js - no separate loading required!
+🔄 New in v3.2.10: Unique IOID per auction cycle!
 📋 Prebid.js ready, checking for ExChain module...
-✅ ExChain Analytics Adapter successfully loaded in Prebid build
+✅ ExChain Analytics Adapter v3.2.10 successfully loaded in Prebid build
+🧪 Debug utilities available for IOID uniqueness testing
 🎯 Adding ad units and requesting bids...
-⚡ beforeRequestBids event fired - ExChain adapter should generate IOID automatically
+⚡ beforeRequestBids event fired (Auction #1) - ExChain adapter should generate unique IOID
+🎯 Auction abc123-456-789 initialized - checking for unique IOID generation
 ✅ ExChain IOID successfully generated and injected!
+🔍 Current IOID: 550e8400-e29b-41d4-a716-446655440000
 📍 IOID in ortb2.site.ext.data.ioids: ["550e8400-e29b-41d4-a716-446655440000"]
 🔤 IOID in ortb2.site.keywords: "ioid=550e8400-e29b-41d4-a716-446655440000"
-🔬 Full ORTB2 site config: {ext: {data: {ioids: Array(1)}}, keywords: "ioid=550e8400-e29b-41d4-a716-446655440000"}
+🎉 UNIQUE IOID confirmed! (1 unique IOIDs generated so far)
 💰 Bid received from appnexus - IOID should be in request
 🏁 Bids received, initializing ad server...
 📡 Ad server initialized and ads requested
 📺 Google Ad Manager configured and services enabled
 ```
 
-## 🐛 Troubleshooting
+## 🧪 Testing IOID Uniqueness (v3.2.10)
+
+### Automated Testing Functions
+The example provides built-in testing functions:
+
+```javascript
+// Test multiple auctions for uniqueness
+testMultipleAuctions()
+
+// Full debug information with uniqueness test
+debugExchain()
+
+// Built-in v3.2.10 debug utility
+pbjs.modules.exchainAnalyticsAdapter.debug.testIOIDUniqueness()
+```
+
+### Manual Testing Commands
+```javascript
+// Check current IOID
+pbjs.getConfig('ortb2').site.ext.data.ioids[0]
+
+// Trigger new auction and verify different IOID
+pbjs.requestBids(); 
+setTimeout(() => console.log('New IOID:', pbjs.getConfig('ortb2').site.ext.data.ioids[0]), 1000);
+
+// Compare multiple IOIDs
+const ioid1 = pbjs.getConfig('ortb2').site.ext.data.ioids[0];
+pbjs.requestBids();
+setTimeout(() => {
+  const ioid2 = pbjs.getConfig('ortb2').site.ext.data.ioids[0];
+  console.log('IOID 1:', ioid1);
+  console.log('IOID 2:', ioid2);
+  console.log('Unique:', ioid1 !== ioid2 ? '✅ YES' : '❌ NO');
+}, 1000);
+```
+
+## 🛠 Troubleshooting
 
 ### "ExChain module not found in installedModules"
 **Problem:** Module wasn't included in Prebid build  
-**Cause:** Build command missing `exchainAnalyticsAdapter`  
 **Solution:** 
 ```bash
 # Make sure you included exchainAnalyticsAdapter in build command
@@ -151,49 +171,29 @@ gulp build --modules=exchainAnalyticsAdapter,yourBidder1,yourBidder2
 # Verify module file exists before building
 ls -la modules/exchainAnalyticsAdapter.js
 
-# Check build output for any errors
-gulp build --modules=exchainAnalyticsAdapter 2>&1 | grep -i error
+# Check for v3.2.10 in file
+grep "3.2.10" modules/exchainAnalyticsAdapter.js
 ```
+
+### "Duplicate IOIDs detected" (v3.2.10 specific)
+**Problem:** Same IOID appearing across multiple auctions  
+**Cause:** Using old v3.2.9 or earlier version  
+**Solution:**
+1. **Verify v3.2.10**: Check console logs for "v3.2.10" version string
+2. **Re-download module**: Ensure you have latest v3.2.10 file
+3. **Rebuild Prebid**: Clean build with latest module
+4. **Clear cache**: Hard refresh browser (Ctrl+Shift+R)
 
 ### "No IOID found in ORTB2 configuration"
 **Problem:** Module loaded but not generating IOIDs  
-**Cause:** Event not firing or initialization issue  
 **Solution:**
 1. **Check console for initialization errors**
 2. **Run manual debugging**: `debugExchain()` in browser console
-3. **Verify event firing**: Look for "beforeRequestBids event fired" message
-4. **Check crypto availability**: Ensure `crypto.getRandomValues` exists
-5. **Inspect network requests**: IOIDs should appear in bid request URLs
-
-### "prebid.js file not found" or "404 Error"
-**Problem:** Built Prebid.js not copied to example directory  
-**Cause:** File path incorrect or build failed  
-**Solution:**
-```bash
-# Check if Prebid build was successful
-ls -la /path/to/Prebid.js/build/dist/prebid.js
-
-# Copy with full paths
-cp /full/path/to/Prebid.js/build/dist/prebid.js /full/path/to/exchain-analytics-adapter/example/prebid.js
-
-# Verify file exists in example directory
-ls -la example/prebid.js
-```
-
-### "CORS Error" or "Module Loading Failed"
-**Problem:** Browser blocking local file access  
-**Cause:** Opening HTML file directly instead of serving via HTTP  
-**Solution:**
-```bash
-# Must serve via HTTP server, not file:// protocol
-cd example
-python -m http.server 8000
-# Visit: http://localhost:8000 (not file:///path/to/index.html)
-```
+3. **Verify crypto availability**: Ensure `crypto.getRandomValues` exists
+4. **Test debug utilities**: `pbjs.modules.exchainAnalyticsAdapter.debug.isReady()`
 
 ### Build Errors in Prebid.js
 **Problem:** Gulp build fails with ExChain module  
-**Cause:** File syntax or import issues  
 **Solution:**
 ```bash
 # Test with minimal build first
@@ -202,44 +202,26 @@ gulp build --modules=exchainAnalyticsAdapter
 # Check for JavaScript syntax errors
 node -c modules/exchainAnalyticsAdapter.js
 
-# Verify file encoding (should be UTF-8)
-file modules/exchainAnalyticsAdapter.js
+# Verify v3.2.10 file integrity
+grep "MODULE_VERSION = '3.2.10'" modules/exchainAnalyticsAdapter.js
 ```
 
 ## 🔧 Manual Debugging & Testing
 
-### Debug Helper Function
-The example provides a helper function for debugging:
-
+### Enhanced Debug Helper Function (v3.2.10)
 ```javascript
 // Run in browser console
 debugExchain()
 
 // Output shows:
-// 🔧 ExChain Debug Info:
+// 🔧 ExChain v3.2.10 Debug Info:
 // 📦 Installed modules: ["core", "exchainAnalyticsAdapter", "appnexus"]
 // ⚙️ Current ORTB2: { site: { ext: { data: { ioids: [...] } } } }
 // 🎯 Ad units: [...]
-```
-
-### Manual Testing Commands
-```javascript
-// Check if module is loaded
-pbjs.installedModules.includes('exchainAnalyticsAdapter')
-
-// Inspect current ORTB2 configuration
-pbjs.getConfig('ortb2')
-
-// Check specific IOID locations
-const ortb2 = pbjs.getConfig('ortb2');
-console.log('IOIDs array:', ortb2?.site?.ext?.data?.ioids);
-console.log('Keywords string:', ortb2?.site?.keywords);
-
-// Trigger new auction manually (generates new IOID)
-pbjs.requestBids({
-  adUnits: pbjs.getAdUnits(),
-  bidsBackHandler: () => console.log('New auction complete with fresh IOID')
-});
+// 📊 Generated IOIDs this session: ["uuid1", "uuid2", "uuid3"]
+// 🔢 Auction count: 3
+// 🧪 Testing IOID uniqueness...
+// 🧪 Uniqueness test result: { allUnique: true, totalGenerated: 3, uniqueGenerated: 3 }
 ```
 
 ### Network Request Verification
@@ -247,57 +229,45 @@ pbjs.requestBids({
 2. **Filter by "XHR" or "Fetch"**
 3. **Look for bid requests** to your SSPs/exchanges
 4. **Check request URLs/payloads** for IOID values
-5. **Each auction should have a unique IOID**
+5. **Each auction should have a different IOID**
 
-## 📋 Key Differences from v3.2.0
+## 📋 Version Comparison
 
-| v3.2.0 (Standalone) | v3.2.8 (Prebid Build) |
-|---------------------|------------------------|
-| Separate webpack build | Built into Prebid.js |
-| `<script src="dist/main.js">` | Included automatically |
-| Manual initialization | Auto-initializes |
-| External dependency | Self-contained |
-| Load order dependency | No load order issues |
-| Version conflicts possible | Version tied to Prebid build |
+| v3.2.9 (Broken) | v3.2.10 (Fixed) |
+|------------------|------------------|
+| ❌ Reuses same IOID | ✅ Unique IOID per auction |
+| ❌ Single UUID for all auctions | ✅ Fresh UUID per `requestBids()` |
+| ❌ No uniqueness tracking | ✅ Built-in uniqueness verification |
+| ❌ Limited debugging | ✅ Enhanced debug utilities |
+| ❌ Race condition issues | ✅ Auction-specific tracking |
 
-## 📋 Copy Options Comparison
+## 🎯 Expected Behavior Flow (v3.2.10)
 
-| Approach | File to Copy | Pros | Cons |
-|----------|--------------|------|------|
-| **Entry Point** | `src/index.js` | ✅ Standard Prebid pattern<br/>✅ Matches v2.5 structure<br/>✅ Clear separation | ❌ Extra import layer |
-| **Implementation** | `src/exchainAnalyticsAdapter/exchainAnalyticsAdapter.js` | ✅ Direct implementation<br/>✅ No import overhead<br/>✅ Self-contained | ❌ Bypasses entry point |
-
-**Recommendation:** Use **Entry Point** approach (`src/index.js`) as it follows Prebid standards and matches your v2.5 working structure.
-
-## 🎯 Expected Behavior Flow
-
-1. **Page Load**: Prebid.js loads with ExChain module built-in
+1. **Page Load**: Prebid.js loads with ExChain v3.2.10 module
 2. **Module Registration**: ExChain registers with `pbjs.installedModules`
-3. **Event Registration**: Module registers for `beforeRequestBids` event
+3. **Initial IOID**: Module generates first IOID immediately
 4. **Ad Unit Setup**: Publisher adds ad units via `pbjs.addAdUnits()`
-5. **Bid Request**: Publisher calls `pbjs.requestBids()` 
-6. **Event Trigger**: `beforeRequestBids` event fires
-7. **IOID Generation**: ExChain generates secure UUIDv4
-8. **ORTB2 Injection**: IOID placed in global ORTB2 config
-9. **Bid Requests**: All bidders receive IOID in requests
-10. **Console Logs**: Detailed logging confirms each step
+5. **First Auction**: Publisher calls `pbjs.requestBids()` 
+6. **IOID Generation**: ExChain generates **unique** UUIDv4 for this auction
+7. **ORTB2 Injection**: Fresh IOID placed in global ORTB2 config
+8. **Bid Requests**: All bidders receive **unique** IOID in requests
+9. **Subsequent Auctions**: Each `requestBids()` gets **different** IOID
+10. **Console Logs**: Detailed logging confirms uniqueness
 
 ## 📞 Support & Feedback
 
-- **Beta Testing Issues**: admin@exchain.co
 - **Integration Questions**: admin@exchain.co  
 - **GitHub Issues**: https://github.com/Exchain-Pte-Ltd/exchain-analytics-adapter/issues
-- **Version**: 3.2.9 (Prebid 8 Compatible)
+- **Version**: v3.2.10 (Production Ready)
 
-## ⚠️ Beta Testing Notes
+## ✅ Production Ready
 
-- **Current version is in beta testing** - not for production use
-- **Test environments only** - do not deploy in live advertising environments  
-- **Data collection**: Analytics collected for improvement purposes
-- **Feedback requested**: Report any issues or suggestions
-- **Support hours**: Available during business hours
+- **Status**: ✅ Production Ready (v3.2.10)
+- **Critical Bug Fixed**: Unique IOID generation implemented
+- **Prebid Compatibility**: 8, 9, 10+
+- **Testing**: Comprehensive uniqueness verification included
 
 ---
 
-**✅ This example works with Prebid.js builds that include the ExChain Analytics Adapter module.**  
-**🎯 Recommended approach: Copy `src/index.js` to `modules/exchainAnalyticsAdapter.js` in your Prebid build.** 
+**✅ This example works with Prebid.js builds that include the ExChain Analytics Adapter v3.2.10 module.**  
+**🎯 Key Feature: Each auction cycle now generates a unique IOID, fixing the critical reuse bug from previous versions.**

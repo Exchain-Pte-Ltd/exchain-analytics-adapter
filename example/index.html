@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>ExChain Analytics Adapter v3.2.9 - Prebid Build Demo</title>
+    <title>ExChain Analytics Adapter v3.2.10 - Prebid Build Demo</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
@@ -30,11 +30,18 @@
       .instructions { background: #f5f5f5; padding: 15px; margin: 20px 0; border-radius: 5px; }
       .ad-slot { border: 2px dashed #ccc; min-height: 250px; padding: 10px; text-align: center; background: #fafafa; }
       .console-note { background: #e8f4fd; padding: 10px; margin: 10px 0; border-left: 4px solid #2196F3; }
+      .new-feature { background: #e8f5e8; padding: 10px; margin: 10px 0; border-left: 4px solid #4caf50; }
+      .debug-box { background: #fff3cd; padding: 10px; margin: 10px 0; border: 1px solid #ffeaa7; border-radius: 5px; }
     </style>
   </head>
 
   <body>
-    <h1>🚀 ExChain Analytics Adapter v3.2.9 Demo</h1>
+    <h1>🚀 ExChain Analytics Adapter v3.2.10 Demo</h1>
+    
+    <div class="new-feature">
+      <h3>🔄 New in v3.2.10:</h3>
+      <p><strong>Unique IOID per Auction Cycle!</strong> Each call to <code>pbjs.requestBids()</code> now generates a fresh, unique IOID (like Transaction IDs).</p>
+    </div>
     
     <div class="instructions">
       <h3>📋 Setup Instructions:</h3>
@@ -42,11 +49,12 @@
         <li>Build Prebid.js with ExChain module: <code>gulp build --modules=exchainAnalyticsAdapter,appnexus</code></li>
         <li>Copy the built <code>prebid.js</code> file to this directory</li>
         <li>Open this page and check browser console for IOID generation logs</li>
+        <li><strong>Test multiple auctions</strong> to verify IOID uniqueness</li>
       </ol>
     </div>
     
     <div class="console-note">
-      <strong>💡 Check Browser Console:</strong> Open DevTools Console to see real-time IOID generation and ORTB2 injection logs
+      <strong>💡 Check Browser Console:</strong> Open DevTools Console to see real-time unique IOID generation and ORTB2 injection logs
     </div>
     
     <h3>📺 Ad Slot (300x250)</h3>
@@ -59,13 +67,41 @@
       </script>
     </div>
     
+    <div class="debug-box">
+      <h3>🧪 Test IOID Uniqueness (v3.2.10)</h3>
+      <p>Run these commands in console to verify unique IOID generation:</p>
+      <code>
+        // Test 1: Check current IOID<br>
+        pbjs.getConfig('ortb2').site.ext.data.ioids[0]<br><br>
+        
+        // Test 2: Trigger new auction and check for different IOID<br>
+        pbjs.requestBids(); setTimeout(() => console.log('New IOID:', pbjs.getConfig('ortb2').site.ext.data.ioids[0]), 1000);<br><br>
+        
+        // Test 3: Automated uniqueness test<br>
+        pbjs.modules.exchainAnalyticsAdapter.debug.testIOIDUniqueness();
+      </code>
+    </div>
+    
     <div class="instructions">
       <h3>🔍 What to Look For:</h3>
       <ul>
-        <li><strong>Console Logs:</strong> IOID generation messages and ORTB2 values</li>
-        <li><strong>Network Tab:</strong> Bid requests should include IOID in keywords</li>
-        <li><strong>Prebid Debug:</strong> <code>pbjs.getConfig('ortb2')</code> should show IOIDs array</li>
+        <li><strong>Console Logs:</strong> v3.2.10 version identification and unique IOID generation messages</li>
+        <li><strong>IOID Uniqueness:</strong> Each auction should show different IOID values</li>
+        <li><strong>Network Tab:</strong> Bid requests should include current auction's IOID in keywords</li>
+        <li><strong>Prebid Debug:</strong> <code>pbjs.getConfig('ortb2')</code> should show current auction's unique IOID</li>
+        <li><strong>Module Status:</strong> <code>pbjs.installedModules.includes('exchainAnalyticsAdapter')</code> should return true</li>
       </ul>
+    </div>
+    
+    <div class="console-note">
+      <h3>📊 Expected Console Output (v3.2.10):</h3>
+      <pre>
+✅ ExChain Analytics v3.2.10: Pre-generation strategy initialized successfully
+✅ ExChain Analytics v3.2.10: Generated unique IOID from immediate-pre-generation: abc123...
+✅ ExChain Analytics v3.2.10: RequestBids pre-generation hook installed
+📍 ExChain Analytics v3.2.10: Initial ORTB2 IOID: abc123...
+🔄 ExChain Analytics v3.2.10: Generated unique IOID from requestBids-pre-generation: def456... (auction: xyz789)
+      </pre>
     </div>
   </body>
 </html>

@@ -21,7 +21,7 @@ gulp build --modules=exchainAnalyticsAdapter
 <script src="./build/dist/prebid.js"></script>
 ```
 
-## 🔍 Overview
+## 📝 Overview
 
 Welcome to the **Exchain Analytics Adapter**!  
 This Prebid.js module introduces a **Pre-Generated IOID (Impression Opportunity ID)** that is:
@@ -31,21 +31,21 @@ This Prebid.js module introduces a **Pre-Generated IOID (Impression Opportunity 
 - Compliant with Prebid.js standards
 - Automatically added to `ortb2.site.ext.data.ioids` and `ortb2.site.keywords`
 
-### 🔄 What's New in v3.2.9
+### 🔄 What's New in v3.2.10
 
-> Version 3.2.9 adds **Prebid 8 compatibility** by preserving all function properties when overriding `requestBids()`, specifically fixing videoModule compatibility issues.
+> Version 3.2.10 introduces **unique IOID generation per auction cycle** - fixing a critical bug where the same IOID was reused across multiple auctions.
 
-- ✅ **Prebid 8 Compatibility** - Preserves `before` function for videoModule  
-- ✅ **Property Preservation** - All requestBids properties maintained during override
-- ✅ **Enhanced Debugging** - New validation and compatibility checking utilities
-- ✅ **Backward Compatible** - Works with Prebid 8, 9, and 10
-- ✅ **Zero Breaking Changes** - Drop-in replacement for v3.2.8
+- ✅ **Fixed Critical Bug** - Now generates unique IOID for each auction cycle
+- ✅ **Auction-Specific Tracking** - Prevents IOID reuse across multiple auctions
+- ✅ **Follows Transaction ID Pattern** - Uses same uniqueness approach as Prebid's native TIDs
+- ✅ **Prebid 8 Compatibility** - Maintains all v3.2.9 compatibility features
+- ✅ **Production Ready** - Professional code cleanup for enterprise deployment
 
 ## 📌 Module Details
 
 - **Module Name:** `exchainAnalyticsAdapter`
 - **Maintainer:** [admin@exchain.co](mailto:admin@exchain.co)
-- **Latest Version:** `v3.2.9`
+- **Latest Version:** `v3.2.10`
 - **Module Type:** Analytics Adapter
 
 ## ✨ Key Features
@@ -53,7 +53,7 @@ This Prebid.js module introduces a **Pre-Generated IOID (Impression Opportunity 
 - 🔒 Privacy-first UUID injection with **no tracking**
 - ⚡ Zero-latency, **pre-auction configuration**
 - 🧩 Seamless Prebid.js integration — no config needed
-- 🧠 Intelligent injection: won't overwrite existing IOIDs
+- 🧠 Intelligent injection: **unique IOID per auction**
 - 🔄 Compatible with **all Prebid bidders**
 
 ## 🧰 Installation & Integration
@@ -89,20 +89,23 @@ gulp build --modules=exchainAnalyticsAdapter
 
 Once included:
 
-1. The module **pre-generates a UUID (IOID)** using secure random APIs
+1. The module **pre-generates a unique UUID (IOID)** for each auction using secure random APIs
 2. It adds the IOID to:
    - `ortb2.site.ext.data.ioids = [<uuid>]`
    - `ortb2.site.keywords += "ioid=<uuid>"`
 3. This happens **automatically** every time `pbjs.requestBids()` is called
+4. **Each auction gets a fresh, unique IOID** (like Transaction IDs)
 
 ### Example Output
 
 ```js
+// First auction
 pbjs.getConfig('ortb2').site.ext.data.ioids
 // → ["de305d54-75b4-431b-adb2-eb6b9e546014"]
 
-pbjs.getConfig('ortb2').site.keywords
-// → "...existing_keywords...,ioid=de305d54-75b4-431b-adb2-eb6b9e546014"
+// Second auction (different IOID)
+pbjs.getConfig('ortb2').site.ext.data.ioids
+// → ["8f7a3b21-c456-4789-9012-3456789abcde"]
 ```
 
 ## 💡 Example Integration
@@ -121,7 +124,7 @@ pbjs.que.push(function () {
 });
 ```
 
-The IOID will already be present in `ortb2` **before** the auction begins.
+The IOID will already be present in `ortb2` **before** the auction begins, and will be **unique for each auction**.
 
 ## 🔐 Privacy & Compliance
 
@@ -142,10 +145,16 @@ The Exchain module is privacy-compliant by design:
   pbjs.getConfig('ortb2').site.ext.data.ioids;
   ```
 
+- ✅ Test IOID uniqueness:
+  ```js
+  // Debug utility to verify unique generation
+  pbjs.modules.exchainAnalyticsAdapter.debug.testIOIDUniqueness();
+  ```
+
 - ⚠️ If IOIDs are missing:
   - Ensure `prebid.js` is loaded before the module
-  - Confirm no IOID is already present
   - Check browser compatibility (requires `crypto.getRandomValues`)
+  - Verify no conflicting analytics modules
 
 ## 📦 Advanced Configuration (Optional)
 
@@ -168,5 +177,5 @@ See [LICENSE.md](LICENSE.md) for details.
 
 ---
 
-**Latest Stable Version: v3.2.9**  
+**Latest Stable Version: v3.2.10**  
 Status: ✅ Production Ready
